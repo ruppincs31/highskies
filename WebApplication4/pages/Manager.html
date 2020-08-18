@@ -1,0 +1,38 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title></title>
+    <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@9"></script>
+    <link href="../Styles/StyleSheet1.css" rel="stylesheet" />
+    <script>
+        function manageOrders() {
+            window.location.replace('OrdersTab.html')
+        }
+        function manageDiscounts() {
+            window.location.replace('DiscountTab.html')
+        }
+        function backToMain() {
+            window.location.replace('index.html')
+        }
+
+    </script>
+</head>
+
+<body id="managerBody" onload="Swal.fire('Logged in','Succesfuly','success')">
+    <div class="hero-nav">
+        <div class="hero-nav__inner">
+            <h1 id="HStitle">High Skies</h1>
+        </div>
+    </div>
+    <div id="tabsLink">
+        <a class="aTabs" onclick="manageOrders()" style="width:auto" ;>Manage Orders</a>
+        <a class="aTabs" onclick="manageDiscounts()" style="width:auto" ;>Manage Discounts</a>
+    </div>
+    <div>
+        <a class="aTabs" onclick="backToMain()" style="width:auto" ;>Main Page</a>
+    </div>
+</body>
+</html>

@@ -1,0 +1,355 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+
+
+    <title>DataTable Example</title>
+
+    <meta http-equiv="Content-type" content="text/html; charset=utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=no">
+
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.19/css/jquery.dataTables.min.css">
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.19/css/dataTables.bootstrap.min.css">
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/responsive/2.2.3/css/responsive.dataTables.min.css">
+
+    <style type="text/css">
+
+        button {
+            margin-left: 10px;
+        }
+
+        .colorDiv {
+            height: 30px;
+            width: 70px;
+            border: 2px solid black
+        }
+
+        #newBTN {
+            background-color: blueviolet;
+            margin-bottom: 10px;
+        }
+    </style>
+
+
+    <script type="text/javascript" src="https://code.jquery.com/jquery-3.3.1.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="https://cdn.datatables.net/1.10.19/js/jquery.dataTables.min.js"></script>
+    <script type="text/javascript" src="https://cdn.datatables.net/responsive/2.2.3/js/dataTables.responsive.min.js"></script>
+    <script type="text/javascript" src="https://cdn.datatables.net/1.10.19/js/dataTables.bootstrap.min.js"></script>
+    <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+    <script src="../Scripts/ajaxCalls.js"></script>
+    <link href="../Styles/StyleSheet1.css" rel="stylesheet" />
+
+    <script>
+
+        // will run when the document is ready
+        $(document).ready(function () {
+
+            mode = "";
+
+            $("#cancelSaveBTN").on("click", function () {
+                discount = null;
+                $("#editDiv").hide();
+                if (mode == "new") $("#pForm").show();
+                mode = "";
+            });
+
+            $("#newBTN").on("click", function () {
+                discount = null;
+                mode = "new";
+                $("#pForm").hide();
+                $("#editDiv").show();
+                clearFields();
+                $("#editDiv :input").prop("disabled", false); // new mode: enable all controls in the form
+            });
+
+
+            // once the document is ready we fetch a list of cars from the server
+            ajaxCall("GET", "../api/discount", null, getSuccess, error);
+
+            $("#discountForm").submit(onSubmitFunc); // wire the submit event to a function called f1
+
+            $("#editDiv").hide();
+        });
+
+        // wire all the buttons to their functions
+        function buttonEvents() {
+
+            $(document).on("click", ".editBtn", function () {
+                mode = "edit";
+                markSelected(this);
+                $("#editDiv").show();
+                $("#editDiv :input").prop("disabled", false); // edit mode: enable all controls in the form
+                populateFields(this.getAttribute('data-discountId')); // fill the form fields according to the selected row
+            });
+
+            $(document).on("click", ".viewBtn", function () {
+                mode = "view";
+                markSelected(this);
+                $("#editDiv").show();
+                row.className = 'selected';
+                $("#editDiv :input").attr("disabled", "disabled"); // view mode: disable all controls in the form
+                populateFields(this.getAttribute('data-discountId'));
+            });
+
+            $(document).on("click", ".deleteBtn", function () {
+                mode = "delete";
+                markSelected(this);
+                var discountId = this.getAttribute('data-discountId');
+                swal({ // this will open a dialouge
+                    title: "Are you sure ??",
+                    text: "",
+                    icon: "warning",
+                    buttons: true,
+                    dangerMode: true
+                })
+                .then(function (willDelete) {
+                    if (willDelete) DeleteDiscount(discountId);
+                    else swal("Not Deleted!");
+                });
+            });
+        }
+
+        // mark the selected row
+        function markSelected(btn) {
+            $("#discountsTable tr").removeClass("selected"); // remove seleced class from rows that were selected before
+            row = (btn.parentNode).parentNode; // button is in TD which is in Row
+            row.className = 'selected'; // mark as selected
+        }
+
+        function DeleteDiscount(id) {
+            ajaxCall("DELETE", "../api/discount" , id, deleteSuccess, error);
+        }
+
+        function onSubmitFunc() {
+
+            var Id = discounts.length;
+            if (mode == "edit") {
+                Id = discount.DiscountId;
+            }
+
+
+            let discounttoSave = {
+                discountId: Id,
+                airlineCode: $("#airline").val(),
+                airportFrom: $("#departureAirport").val(),
+                airportTo: $("#arivalAirport").val(),
+                dateFrom: $("#departureDate").val(),
+                dateTo: $("#arivalDate").val(),
+                discountValue: $("#discount").val(),
+            }
+
+            if (mode == "edit")
+                ajaxCall("PUT", "../api/discount", JSON.stringify(discounttoSave), updateSuccess, error);
+            else if (mode == "new")
+                ajaxCall("POST", "../api/discount", JSON.stringify(discounttoSave), insertSuccess, error);
+            return false;
+        }
+
+        // fill the form fields
+        function populateFields(discountId) {
+            discount = getDiscount(discountId);
+            $('#airline').val(discount.AirlineCode);
+            $('#departureAirport').val(discount.AirportFrom);
+            $('#arivalAirport').val(discount.AirportTo);
+            $('#departureDate').val(new Date(discount.DateFrom));
+            $('#arivalDate').val(new Date(discount.DateTo));
+            $('#discount').val(discount.DiscountValue);
+        }
+
+
+        // fill the form fields
+        function clearFields() {
+            $('#airline').val("");
+            $('#departureAirport').val("");
+            $('#arivalAirport').val("");
+            $('#departureDate').val("");
+            $('#arivalDate').val("");
+            $('#discount').val("");
+        }
+
+        // get a car according to its Id
+        function getDiscount(id) {
+            for (i in discounts) {
+                if (discounts[i].DiscountId == id)
+                    return discounts[i];
+            }
+            return null;
+        }
+
+        // success callback function after update
+        function updateSuccess(discountsdata) {
+            tbl.clear();
+            redrawTable(tbl, discountsdata);
+            buttonEvents();
+            $("#editDiv").hide();
+            swal("Updated Successfuly!", "Great Job", "success");
+            mode = "";
+        }
+
+        // success callback function after update
+        function insertSuccess(discountdata) {
+            $("#pForm").show();
+            tbl.clear();
+            redrawTable(tbl, discountdata);
+            buttonEvents();
+            $("#editDiv").hide();
+            swal("Inserted Successfuly!", "Great Job", "success");
+            mode = "";
+        }
+
+        // success callback function after delete
+        function deleteSuccess(discountdata) {
+            tbl.clear();
+            redrawTable(tbl, discountdata);
+            buttonEvents(); // after redrawing the table, we must wire the new buttons
+            $("#editDiv").hide();
+            swal("Deleted Successfuly!", "Great Job", "success");
+            mode = "";
+        }
+
+        // redraw a datatable with new data
+        function redrawTable(tbl, data) {
+            tbl.clear();
+            for (var i = 0; i < data.length; i++) {
+                tbl.row.add(data[i]);
+            }
+            tbl.draw();
+        }
+
+        // this function is activated in case of a success
+        function getSuccess(discountdata) {
+            discounts = discountdata; 
+            try {
+                tbl = $('#discountsTable').DataTable({
+                    data: discountdata,
+                    pageLength: 5,
+                    columns: [
+                        {
+                            render: function (data, type, row, meta) {
+                                let dataDiscount = "data-discountId='" + row.DiscountId + "'";
+
+                                editBtn = "<button type='button' class = 'editBtn btn btn-success' " + dataDiscount + "> Edit </button>";
+                                viewBtn = "<button type='button' class = 'viewBtn btn btn-info' " + dataDiscount + "> View </button>";
+                                deleteBtn = "<button type='button' class = 'deleteBtn btn btn-danger' " + dataDiscount + "> Delete </button>";
+                                return editBtn + viewBtn + deleteBtn;
+                            }
+                        },
+                        { data: "DiscountId" },
+                        { data: "AirlineCode" },
+                        { data: "AirportFrom" },
+                        { data: "AirportTo" },
+                        { data: "DateFrom" },
+                        { data: "DateTo" },
+                        { data: "DiscountValue" }
+                    ],
+                });
+                buttonEvents();
+            }
+
+            catch (err) {
+                alert(err);
+            }
+        }
+
+        // this function is activated in case of a failure
+        function error(err) {
+            swal("Error: " + err);
+        }
+
+        function backToManagment() {
+            window.location.replace('Manager.html')
+        }
+
+    </script>
+
+</head>
+<body>
+
+    <div class="hero-nav">
+        <div class="hero-nav__inner">
+            <h1 id="HStitle">High Skies</h1>
+            <div class="hero-nav__button">
+            </div>
+        </div>
+    </div>
+    <div>
+        <a class="aTabs" onclick="backToManagment()" style="width:auto" ;>Back to Managment</a>
+    </div>
+    <div class="container">
+        <input type="button" value="New" class="btn btn-primary btn-lg" id="newBTN" />
+        <form id="pForm">
+            <table id="discountsTable" class="display nowrap" style="width:100%">
+                <thead>
+                    <tr>
+                        <th></th>
+                        <th>Discount Id</th>
+                        <th>Airline</th>
+                        <th>Departure Airport</th>
+                        <th>Arival Airport</th>
+                        <th>Departure Date</th>
+                        <th>Arival Date</th>
+                        <th>Discount</th>
+                    </tr>
+                </thead>
+            </table>
+
+        </form>
+
+        <div id="editDiv">
+            <form id="discountForm">
+                <div class="form-group row">
+                    <div class="form-group col-sm-4">
+                        <label for="Airline"><span class="red-star">★ </span>Airline</label>
+                        <input type="text" class="form-control" id="airline" placeholder="Enter the airline name" required>
+                    </div>
+
+
+                    <div class="form-group col-sm-4">
+                        <label for="departureAirport"><span class="red-star">★ </span>Departure Airport</label>
+                        <input type="text" class="form-control" id="departureAirport" placeholder="Enter the departure airport" required>
+                    </div>
+
+
+                    <div class="form-group col-sm-4">
+                        <label for="arivalAirport"><span class="red-star">★ </span>Arival Airport</label>
+                        <input type="text" class="form-control" id="arivalAirport" placeholder="Enter the arival airport" required>
+                    </div>
+
+
+
+
+                </div>
+
+                <div class="form-group row">
+
+                    <div class="form-group col-sm-4">
+                        <label for="departureDate"><span class="red-star">★ </span>Departure Date</label>
+                        <input type="date" class="form-control" id="departureDate" required />
+                    </div>
+
+                    <div class="form-group col-sm-4">
+                        <label for="arivalDate"><span class="red-star">★ </span>Arival Date</label>
+                        <input type="date" class="form-control" id="arivalDate" required />
+                    </div>
+
+                    <div class="form-group col-sm-4">
+                        <label for="discount"><span class="red-star">★ </span>Discount</label>
+                        <input type="number" class="form-control" id="discount" placeholder="Enter the discount" required />
+                    </div>
+
+                </div>
+
+                <button type="submit" class="btn btn-primary btn-lg" id="saveBTN">Save</button>
+                <input type="button" class="btn btn-warning btn-lg" id="cancelSaveBTN" value="Cancel" />
+            </form>
+        </div>
+
+    </div>
+
+
+
+
+</body>
+</html>

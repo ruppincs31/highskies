@@ -1,0 +1,396 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title></title>
+    <script src="../Scripts/ajaxCalls.js"></script>
+    <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@9"></script>
+    <link href="../Styles/StyleSheet1.css" rel="stylesheet" />
+    <script>
+        var flightsData;
+        var discountsData;
+
+        $(document).ready(function () {
+            $("#postBTN").click(postFlight);
+            $("#getAirports").click(getAirports);
+            $("#getAirlines").click(getAirlines);
+        });
+
+        function getAirports() {
+            api = "https://api.skypicker.com/locations?type=dump&locale=en-US&location_types=airport&limit=4000&active_only=true&sort=name"
+            ajaxCall("GET", api, null, successCBAirports, null);
+        }
+
+        function getAirlines() {
+            api = "https://api.skypicker.com/airlines?"
+            ajaxCall("GET", api, null, successCBAirlines, null);
+        }
+
+        function successCBAirports(data) {
+            var airports = []
+            for (var i = 0; i < data["locations"].length; i++) {
+                currAirport = {
+                    airportId: data["locations"][i].id,
+                    airportName: data["locations"][i].name,
+                    airportCity: data["locations"][i].city.name,
+                    airportState: data["locations"][i].city.country.name,
+                    airportLong: data["locations"][i].location.lon,
+                    airportLat: data["locations"][i].location.lat
+                }
+                airports.push(currAirport)
+            }
+            ajaxCall("POST", "../api/airport", JSON.stringify(airports), check, null);
+        }
+
+        function successCBAirlines(data) {
+            var airlines = []
+            for (var i = 0; i < data.length; i++) {
+                if (data[i].type == 'airline') {
+                    currAirline = {
+                        AirlineId: data[i].id,
+                        AirlineName: data[i].name
+                    }
+                    airlines.push(currAirline)
+                }
+            }
+            ajaxCall("POST", "../api/airlines", JSON.stringify(airlines), checkk, null);
+        }
+
+        function check() {
+            console.log("successairport")
+        }
+
+        function checkk() {
+            console.log("successairlines")
+        }
+
+        function addFlight(currID) {
+            var legs = [];
+            for (var j = 0; j < flightsData.data[currID].route.length; j++) {
+                difference = ((flightsData.data[currID].route[j].aTime * 1000) - (flightsData.data[currID].route[j].dTime * 1000))
+                hrsDiff = Math.floor(difference / 1000 / 60 / 60);
+                difference -= hrsDiff * 1000 * 60 * 60;
+                mntsDiff = Math.floor(difference / 1000 / 60);
+                lengthStr = hrsDiff + 'h ' + mntsDiff + 'm';
+                legO = {
+                    legId: flightsData.data[currID].route[j].id,
+                    legFlightId: flightsData.data[currID].id,
+                    legDepartureAirport: flightsData.data[currID].route[j].flyFrom,
+                    legArivalAirport: flightsData.data[currID].route[j].flyTo,
+                    legAirlineId: flightsData.data[currID].route[j].airline,
+                    legFlightLength: lengthStr,
+                    legNum: (j + 1),
+                    legFlightNo: flightsData.data[currID].route[j].flight_no,
+                    legDepartureTime: new Date(flightsData.data[currID].route[j].dTime * 1000),
+                    legArivalTime: new Date(flightsData.data[currID].route[j].aTime * 1000)
+                }
+                legs.push(legO)
+            }
+            flightO = {
+                flightId: flightsData.data[currID].id,
+                from: flightsData.data[currID].flyFrom,
+                to: flightsData.data[currID].flyTo,
+                stops: flightsData.data[currID].route.length,
+                price: flightsData.data[currID].conversion[flightsData.currency],
+                startDate: new Date(flightsData.data[currID].dTime * 1000),
+                endDate: new Date(flightsData.data[currID].aTime * 1000),
+                travelTime: flightsData.data[currID].fly_duration,
+                legs: legs
+            }
+            ajaxCall("POST", '../api/flight', JSON.stringify(flightO), null, null);
+        }
+
+        function postFlight() {
+            let from = $("#fromTB").val();
+            let to = $("#toTB").val();
+            let startDate = $("#startDate").val();
+            let endDate = $("#endDate").val();
+            startDate = startDate.split("-")
+            startDatefixed = startDate[2] + "/" + startDate[1] + "/" + startDate[0];
+            endDate = endDate.split("-")
+            endDatefixed = endDate[2] + "/" + endDate[1] + "/" + endDate[0];
+            o = {
+                From: from,
+                To: to,
+                StartDate: startDatefixed,
+                EndDate: endDatefixed
+            }
+
+            let api = "https://api.skypicker.com/flights?flyFrom=" + from + "&to=" + to + "&dateFrom=" + startDatefixed + "&dateTo=" + endDatefixed + "&partner=picky";
+            ajaxCall("GET", "../api/discount", null, successDiscountData, null);
+            ajaxCall("GET", api, null, successCBF, null);
+        }
+
+        function successDiscountData(data) {
+            discountsData = data;
+        }
+
+        function successCBF(data) {
+            flightsData = data;
+            renderFlights(flightsData);
+        }
+
+        function convertDiscountTimes() {
+            for (var i = 0; i < discountsData.length; i++) {
+                var newTime = new Date(discountsData[i].DateFrom)
+                newTime = (newTime.getTime() / 1000)
+                discountsData[i].DateFrom = newTime
+                newTime = new Date(discountsData[i].DateTo)
+                newTime = (newTime.getTime() / 1000)
+                discountsData[i].DateTo = newTime
+            }
+        }
+
+        function renderFlights(flightsData) {
+            let flightStr = "<tr><th></th><th>Flight Price</th><th>Departure Time</th><th>Arival Time</th><th>From</th><th>To</th><th>Stops</th></tr>";
+            convertDiscountTimes()
+            for (var i = 0; i < flightsData.data.length; i++) {
+                flightsData.data[i].p1 = 0;
+                for (var k = 0; k < discountsData.length; k++) {
+                    if (flightsData.data[i].route.length == 1) {
+                        if ((flightsData.data[i].airlines[0] == discountsData[k].AirlineCode) &&
+                            (flightsData.data[i].flyFrom == discountsData[k].AirportFrom) &&
+                            (flightsData.data[i].flyTo == discountsData[k].AirportTo) &&
+                            (flightsData.data[i].dTime <= discountsData[k].DateFrom) &&
+                            (flightsData.data[i].dTime >= discountsData[k].DateTo)) {
+                            flightsData.data[i].p1 = 1;
+                            flightsData.data[i].p2 = k;
+                        }
+                    }
+                }
+                let stopsStr = "";
+                for (var j = 1; j < flightsData.data[i].route.length; j++) {
+                    stopsStr += "Stop" + j + ": " + flightsData.data[i].route[j].cityFrom + "</br>";
+                }
+                if (flightsData.data[i].p1 == 1) {
+                    flightStr += "<tr><td><input type='button' onclick='getFormId()' style='width:auto' class='addButtons' id='" + i + "' value='Order Flight'/></td>"
+                        + "<td>" + (flightsData.data[i].conversion[flightsData.currency] * (1 - (discountsData[flightsData.data[i].p2].DiscountValue / 100))) + " " + flightsData.currency + "</br>" + discountsData[flightsData.data[i].p2].DiscountValue + "% Discount</td>"
+                        + "<td>" + new Date(flightsData.data[i].dTime * 1000) + "</td>"
+                        + "<td>" + new Date(flightsData.data[i].aTime * 1000) + "</td>"
+                        + "<td>" + flightsData.data[i].cityFrom + "</td>"
+                        + "<td>" + flightsData.data[i].cityTo + "</td>"
+                        + "<td>" + stopsStr + "</td></tr>"
+                        }
+                else {
+                    flightStr += "<tr><td><input type='button' onclick='getFormId()' style='width:auto' class='addButtons' id='" + i + "' value='Order Flight'/></td>"
+                        + "<td>" + flightsData.data[i].conversion[flightsData.currency] + " " + flightsData.currency + "</td>"
+                        + "<td>" + new Date(flightsData.data[i].dTime * 1000) + "</td>"
+                        + "<td>" + new Date(flightsData.data[i].aTime * 1000) + "</td>"
+                        + "<td>" + flightsData.data[i].cityFrom + "</td>"
+                        + "<td>" + flightsData.data[i].cityTo + "</td>"
+                        + "<td>" + stopsStr + "</td></tr>"
+                }
+            }
+
+            $("#tablePH").html(flightStr);
+        }
+
+        function getFormId() {
+            document.getElementById('id02').style.display = 'block';
+        }
+
+
+        var heroShinker = function () {
+            var hero = $('.hero-nav'),
+                heroHeight = $('.hero-nav').outerHeight(true);
+            $(hero).parent().css('padding-top', heroHeight);
+            $(window).scroll(function () {
+                var scrollOffset = $(window).scrollTop();
+                if (scrollOffset < heroHeight) {
+                    $(hero).css('height', (heroHeight - scrollOffset));
+                }
+                if (scrollOffset > (heroHeight - 215)) {
+                    hero.addClass('fixme');
+                } else {
+                    hero.removeClass('fixme');
+                };
+            });
+        }
+        heroShinker();
+
+        //var modal = document.getElementById('id01');
+        //window.onclick = function(event) {
+        //    if (event.target == modal) {
+        //        modal.style.display = "none";
+        //    }
+        //    }
+
+        function completeOrder() {
+            var orderFormInputs = document.getElementById('orderForm').getElementsByTagName('input')
+            var passengersNames = orderFormInputs[0].value;
+            var passengerEmail = orderFormInputs[1].value;
+            var orderDate = new Date();
+            if (ValidateEmail(passengerEmail)) {
+                if (orderFormInputs[2].checked) {
+                    passengerO = {
+                        passengersNames: passengersNames,
+                        passengerEmail: passengerEmail,
+                        orderDate: orderDate
+                    }
+                    Swal.fire('Order completed succesfully!',
+                        'Thank you for booking your flight with High Skies',
+                        'success')
+                    ajaxCall("POST", '../api/order', JSON.stringify(passengerO), orderSuccess, null);
+                }
+                else {
+                    Swal.fire('You did not accept the terms and conditions!',
+                        'Please fill the checkbox and try again',
+                        'error'
+                    )
+                    return
+                }
+            }
+            else {
+                Swal.fire('Wrong email pattern!',
+                    'Please enter a valid email',
+                    'error'
+                )
+                return
+            }
+        }
+
+        function orderSuccess() {
+             $("#id02")[0].style.display = 'none'
+        }
+
+        function ValidateEmail(mail) {
+             if (/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(mail))
+              {
+                return true
+              }
+             return false
+        }
+
+        function loginAttempt() {
+            var loginFormInputs = document.getElementById('loginForm').getElementsByTagName('input')
+            var userName = loginFormInputs[0].value;
+            var userPassword = loginFormInputs[1].value;
+            userO = {
+                UserType: 'admin',
+                UserName: userName,
+                UserPassword: userPassword
+            }
+            ajaxCall("POST", '../api/user', JSON.stringify(userO), loginCallback, null);
+        }
+
+        function loginCallback(result) {
+            if (result) {
+                window.location.replace('Manager.html')
+                return;
+            }
+            else {
+                Swal.fire('Wrong credentials!',
+                    'Try Again!',
+                    'error'
+                )
+            }
+        }
+
+        function orderSubmit(event) {
+            event.preventDefault();
+        }
+
+    </script>
+</head>
+<body>
+    <div class="hero-nav">
+        <div class="hero-nav__inner">
+            <h1 id="HStitle">High Skies</h1>
+            <div class="hero-nav__button">
+                <a class="aTabs" onclick="document.getElementById('id01').style.display='block'" style="width:auto" id="adminLNK";>Login as Admin</a>
+            </div>
+        </div>
+    </div>
+    <div id="flightPickerPH">
+        <table class="flightPicker">
+            <tr>
+                <td>From:</td>
+                <td><input type="text" id="fromTB" value="LON" autocomplete="on" /></td>
+            </tr>
+            <tr>
+                <td>To:</td>
+                <td><input type="text" id="toTB" value="TLV" autocomplete="on" /></td>
+            </tr>
+            <tr>
+                <td>
+                    Departure date:
+                </td>
+                <td>
+                    <input type="date" id="startDate" name="trip-start"
+                           value="2020-08-23"
+                           min="2020-01-01" max="2022-12-31">
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Arival date:
+                </td>   
+                <td>
+                    <input type="date" id="endDate" name="trip-end"
+                           value="2020-08-25"
+                           min="2020-01-01" max="2022-12-31">
+                </td>
+            </tr>
+            <tr>
+                <td><input type="button" id="postBTN" value="Post Flight" />
+            </tr>
+           
+        </table>
+    </div>
+    <div id="ph">
+        <table id="tablePH" class="blueTable">
+        </table>
+    </div>
+    <div id="id01" class="modal">
+
+        <div class="modal-content animate" id="loginForm">
+            <div class="imgcontainer">
+                <span onclick="document.getElementById('id01').style.display='none'" class="close" title="Close Modal">&times;</span>
+                <img src="https://www.w3schools.com/howto/img_avatar.png" alt="Avatar" class="avatar">
+            </div>
+
+            <div class="container">
+                <label for="uname"><b>Username</b></label>
+                <input type="text" placeholder="Enter Username" name="uname" required>
+
+                <label for="psw"><b>Password</b></label>
+                <input type="password" placeholder="Enter Password" name="psw" required>
+
+                <button onclick="loginAttempt()">Login</button>
+            </div>
+
+            <div class="container" style="background-color:#f1f1f1">
+                <button type="button" onclick="document.getElementById('id01').style.display='none'" class="cancelbtn">Cancel</button>
+            </div>
+        </div>
+    </div>
+    <form id="id02" class="modal" onsubmit="orderSubmit(event)">
+
+        <div class="modal-content animate" id="orderForm">
+            <div class="imgcontainer">
+                <span onclick="document.getElementById('id02').style.display='none'" class="close" title="Close Modal">&times;</span>
+            </div>
+
+            <div class="container">
+                <label for="pnames"><b>Passenger names</b></label>
+                <input type="text" placeholder="Enter Passenger names" name="pnames" required>
+
+                <label for="mail"><b>Enter email address</b></label>
+                <input type="email" placeholder="Enter Email" name="mail" required>
+
+                <label>
+                    <input type="checkbox" name="remember" required> I agree to the High Skies terms and conditions
+                </label>
+                <br />
+                <button onclick="completeOrder()">Complete Order</button>
+            </div>
+
+            <div class="container" style="background-color:#f1f1f1">
+                <button type="button" onclick="document.getElementById('id02').style.display='none'" class="cancelbtn">Cancel</button>
+            </div>
+        </div>
+    </form>
+</body>
+</html>

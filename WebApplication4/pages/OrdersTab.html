@@ -1,0 +1,130 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+
+
+    <title>DataTable Example</title>
+
+    <meta http-equiv="Content-type" content="text/html; charset=utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=no">
+
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.19/css/jquery.dataTables.min.css">
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.19/css/dataTables.bootstrap.min.css">
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/responsive/2.2.3/css/responsive.dataTables.min.css">
+
+    <style type="text/css">
+
+        button {
+            margin-left: 10px;
+        }
+
+        .colorDiv {
+            height: 30px;
+            width: 70px;
+            border: 2px solid black
+        }
+
+    </style>
+
+    <script type="text/javascript" src="https://code.jquery.com/jquery-3.3.1.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="https://cdn.datatables.net/1.10.19/js/jquery.dataTables.min.js"></script>
+    <script type="text/javascript" src="https://cdn.datatables.net/responsive/2.2.3/js/dataTables.responsive.min.js"></script>
+    <script type="text/javascript" src="https://cdn.datatables.net/1.10.19/js/dataTables.bootstrap.min.js"></script>
+    <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+    <script src="../Scripts/ajaxCalls.js"></script>
+    <link href="../Styles/StyleSheet1.css" rel="stylesheet" />
+
+    <script>
+
+        // will run when the document is ready
+        $(document).ready(function () {
+            mode = "";
+            ajaxCall("GET", "../api/order", null, getSuccess, error);
+            $("#editDiv").hide();
+        });
+
+        // mark the selected row
+        function markSelected(btn) {
+            $("#ordersTable tr").removeClass("selected"); // remove seleced class from rows that were selected before
+            row = (btn.parentNode).parentNode; // button is in TD which is in Row
+            row.className = 'selected'; // mark as selected
+        }
+
+        function getOrder(id) {
+            for (i in Orders) {
+                if (Orders[i].OrderId == id)
+                    return orders[i];
+            }
+            return null;
+        }
+
+        function redrawTable(tbl, data) {
+            tbl.clear();
+            for (var i = 0; i < data.length; i++) {
+                tbl.row.add(data[i]);
+            }
+            tbl.draw();
+        }
+
+        // this function is activated in case of a success
+        function getSuccess(orderdata) {
+            orders = orderdata;
+            try {
+                tbl = $('#ordersTable').DataTable({
+                    data: orderdata,
+                    pageLength: 5,
+                    columns: [
+                        { data: "OrderId" },
+                        { data: "PassengersNames" },
+                        { data: "PassengerEmail" },
+                        { data: "OrderDate" }
+                    ],
+                });
+            }
+
+            catch (err) {
+                alert(err);
+            }
+        }
+
+        // this function is activated in case of a failure
+        function error(err) {
+            swal("Error: " + err);
+        }
+
+        function backToManagment() {
+            window.location.replace('Manager.html')
+        }
+    </script>
+
+</head>
+<body>
+    <div class="hero-nav">
+        <div class="hero-nav__inner">
+            <h1 id="HStitle">High Skies</h1>
+            <div class="hero-nav__button">
+            </div>
+        </div>
+    </div>
+    <div>
+        <a class="aTabs" onclick="backToManagment()" style="width:auto" ;>Back to Managment</a>
+    </div>
+    <div class="container">
+        <form id="pForm">
+            <table id="ordersTable" class="display nowrap" style="width:100%">
+                <thead>
+                    <tr>
+                        <th>Order Id</th>
+                        <th>Passengers Names</th>
+                        <th>Passenger Email</th>
+                        <th>Order Date GMT+0</th>
+                    </tr>
+                </thead>
+            </table>
+        </form>
+    </div>
+
+</body>
+</html>
