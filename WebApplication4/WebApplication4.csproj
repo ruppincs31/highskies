@@ -185,6 +185,7 @@
     <Content Include="Global.asax" />
     <Content Include="pages\DiscountTab.html" />
     <Content Include="pages\index.html" />
+    <Content Include="pages\PacketsForCustomer.html" />
     <Content Include="pages\Manager.html" />
     <Content Include="pages\OrdersTab.html" />
     <Content Include="Scripts\ajaxCalls.js" />

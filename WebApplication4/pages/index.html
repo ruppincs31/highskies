@@ -145,7 +145,7 @@
 
         function renderFlights(flightsData) {
             let flightStr = "<tr><th></th><th>Flight Price</th><th>Departure Time</th><th>Arival Time</th><th>From</th><th>To</th><th>Stops</th></tr>";
-            convertDiscountTimes()
+            convertDiscountTimes();
             for (var i = 0; i < flightsData.data.length; i++) {
                 flightsData.data[i].p1 = 0;
                 for (var k = 0; k < discountsData.length; k++) {
@@ -164,7 +164,7 @@
                 for (var j = 1; j < flightsData.data[i].route.length; j++) {
                     stopsStr += "Stop" + j + ": " + flightsData.data[i].route[j].cityFrom + "</br>";
                 }
-                if (flightsData.data[i].p1 == 1) {
+                if (flightsData.data[i].p1 == 1 ) {
                     flightStr += "<tr><td><input type='button' onclick='getFormId()' style='width:auto' class='addButtons' id='" + i + "' value='Order Flight'/></td>"
                         + "<td>" + (flightsData.data[i].conversion[flightsData.currency] * (1 - (discountsData[flightsData.data[i].p2].DiscountValue / 100))) + " " + flightsData.currency + "</br>" + discountsData[flightsData.data[i].p2].DiscountValue + "% Discount</td>"
                         + "<td>" + new Date(flightsData.data[i].dTime * 1000) + "</td>"
@@ -172,7 +172,9 @@
                         + "<td>" + flightsData.data[i].cityFrom + "</td>"
                         + "<td>" + flightsData.data[i].cityTo + "</td>"
                         + "<td>" + stopsStr + "</td></tr>"
-                        }
+                        
+                    
+                }
                 else {
                     flightStr += "<tr><td><input type='button' onclick='getFormId()' style='width:auto' class='addButtons' id='" + i + "' value='Order Flight'/></td>"
                         + "<td>" + flightsData.data[i].conversion[flightsData.currency] + " " + flightsData.currency + "</td>"
@@ -191,7 +193,11 @@
             document.getElementById('id02').style.display = 'block';
         }
 
-
+        function getNewFormId() {
+            
+                document.getElementById('id03').style.display = 'block';
+           
+        }
         var heroShinker = function () {
             var hero = $('.hero-nav'),
                 heroHeight = $('.hero-nav').outerHeight(true);
@@ -216,6 +222,12 @@
         //        modal.style.display = "none";
         //    }
         //    }
+
+
+
+        
+
+        
 
         function completeOrder() {
             var orderFormInputs = document.getElementById('orderForm').getElementsByTagName('input')
@@ -251,16 +263,18 @@
             }
         }
 
+
+       
+
         function orderSuccess() {
-             $("#id02")[0].style.display = 'none'
+            $("#id02")[0].style.display = 'none'
         }
 
         function ValidateEmail(mail) {
-             if (/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(mail))
-              {
+            if (/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(mail)) {
                 return true
-              }
-             return false
+            }
+            return false
         }
 
         function loginAttempt() {
@@ -291,6 +305,9 @@
         function orderSubmit(event) {
             event.preventDefault();
         }
+        function goTosuggetsPage() {
+            window.location.replace("PacketsForCustomer.html");
+        }
 
     </script>
 </head>
@@ -299,7 +316,7 @@
         <div class="hero-nav__inner">
             <h1 id="HStitle">High Skies</h1>
             <div class="hero-nav__button">
-                <a class="aTabs" onclick="document.getElementById('id01').style.display='block'" style="width:auto" id="adminLNK";>Login as Admin</a>
+                <a class="aTabs" onclick="document.getElementById('id01').style.display='block'" style="width:auto" id="adminLNK" ;>Login as Admin</a>
             </div>
         </div>
     </div>
@@ -326,7 +343,7 @@
             <tr>
                 <td>
                     Arival date:
-                </td>   
+                </td>
                 <td>
                     <input type="date" id="endDate" name="trip-end"
                            value="2020-08-25"
@@ -336,7 +353,7 @@
             <tr>
                 <td><input type="button" id="postBTN" value="Post Flight" />
             </tr>
-           
+
         </table>
     </div>
     <div id="ph">
@@ -384,11 +401,29 @@
                     <input type="checkbox" name="remember" required> I agree to the High Skies terms and conditions
                 </label>
                 <br />
-                <button onclick="completeOrder()">Complete Order</button>
+                <button onclick="getNewFormId()">Complete Order</button>
             </div>
 
             <div class="container" style="background-color:#f1f1f1">
                 <button type="button" onclick="document.getElementById('id02').style.display='none'" class="cancelbtn">Cancel</button>
+            </div>
+        </div>
+    </form>
+
+    <form id="id03" class="modal" onsubmit="orderSubmit(event)">
+
+        <div class="modal-content animate" id="orderForm">
+            <div class="imgcontainer">
+                <span onclick="document.getElementById('id03').style.display='none'" class="close" title="Close Modal">&times;</span>
+            </div>
+
+            <div class="container">
+                <h3>We are suggetsing some activites for u instead of u waiting inside the aiport!</h3><br />
+                <button onclick="goTosuggetsPage()">I am Intersted</button>
+            </div>
+
+            <div class="container" style="background-color:#f1f1f1">
+                <button type="button" onclick="document.getElementById('id03').style.display='none'" class="cancelbtn">Cancel</button>
             </div>
         </div>
     </form>
