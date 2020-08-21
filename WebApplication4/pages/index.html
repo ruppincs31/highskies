@@ -27,6 +27,7 @@
             api = "https://api.skypicker.com/airlines?"
             ajaxCall("GET", api, null, successCBAirlines, null);
         }
+        
 
         function successCBAirports(data) {
             var airports = []
@@ -198,6 +199,11 @@
                 document.getElementById('id03').style.display = 'block';
            
         }
+        function getSignupForm() {
+            document.getElementById('id04').style.display = 'none';
+
+            document.getElementById('id05').style.display = 'block';
+        }
         var heroShinker = function () {
             var hero = $('.hero-nav'),
                 heroHeight = $('.hero-nav').outerHeight(true);
@@ -309,6 +315,26 @@
             window.location.replace("PacketsForCustomer.html");
         }
 
+        function signUp() {
+            var loginFormInputs = document.getElementById('signUpForm').getElementsByTagName('input');
+            var userName = loginFormInputs[0].value;
+            var userPassword = loginFormInputs[1].value;
+            var userEmail = loginFormInputs[2].value;
+            var TourCompanyName = loginFormInputs[3].value;
+            if (ValidateEmail(userEmail)) {
+
+                    TourCompanyO = {
+                        userName: userName,
+                        userPassword: userPassword,
+                        userEmail: userEmail,
+                        TourCompanyName: TourCompanyName
+                        
+                }
+                Swal.fire('Thanks for signing up!');
+                ajaxCall("POST", '../api/TourCompany', JSON.stringify(TourCompanyO), orderSuccess, null);
+        }
+
+
     </script>
 </head>
 <body>
@@ -317,8 +343,11 @@
             <h1 id="HStitle">High Skies</h1>
             <div class="hero-nav__button">
                 <a class="aTabs" onclick="document.getElementById('id01').style.display='block'" style="width:auto" id="adminLNK" ;>Login as Admin</a>
+                <a class="aTabs" onclick="document.getElementById('id04').style.display='block'" style="width:auto" id="adminLNK" ;>Sign in</a>
+
             </div>
         </div>
+
     </div>
     <div id="flightPickerPH">
         <table class="flightPicker">
@@ -427,5 +456,64 @@
             </div>
         </div>
     </form>
+
+
+    <div id="id04" class="modal">
+
+        <div class="modal-content animate" id="loginForm">
+            <div class="imgcontainer">
+                <span onclick="document.getElementById('id01').style.display='none'" class="close" title="Close Modal">&times;</span>
+                <img src="https://www.w3schools.com/howto/img_avatar.png" alt="Avatar" class="avatar">
+            </div>
+
+            <div class="container">
+                <label for="uname"><b>Username</b></label>
+                <input type="text" placeholder="Enter Username" name="uname" required>
+
+                <label for="psw"><b>Password</b></label>
+                <input type="password" placeholder="Enter Password" name="psw" required>
+
+                <label for="psw"><b>Tour company</b></label>
+                <input type="text" placeholder="Enter Company name" name="psw" required>
+                <button onclick="signIn()">Sign in</button>
+                <h6>You didnt sign up yet? No problem!</h6>
+                <button onclick="getSignupForm()">Sign up here</button>
+            </div>
+
+            <div class="container" style="background-color:#f1f1f1">
+                <button type="button" onclick="document.getElementById('id04').style.display='none'" class="cancelbtn">Cancel</button>
+            </div>
+        </div>
+    </div>
+    <div id="id05" class="modal">
+
+        <div class="modal-content animate" id="signUpForm">
+            <div class="imgcontainer">
+                <span onclick="document.getElementById('id05').style.display='none'" class="close" title="Close Modal">&times;</span>
+                <img src="https://www.w3schools.com/howto/img_avatar.png" alt="Avatar" class="avatar">
+            </div>
+
+            <div class="container">
+                <label for="uname"><b>Username</b></label>
+                <input type="text" placeholder="Enter Username" name="uname" required>
+
+                <label for="psw"><b>Password</b></label>
+                <input type="password" placeholder="Enter Password" name="psw" required>
+
+                <label for="psw"><b>Email</b></label>
+                <input type="text" placeholder="Enter Company name" name="psw" required>
+                <label for="uname"><b>Tour company name (Will appear to costumers)</b></label>
+                <input type="text" placeholder="Enter Tour company name" name="uname" required>
+                <button onclick="signUp()">Sign up</button>
+
+            </div>
+
+            <div class="container" style="background-color:#f1f1f1">
+                <button type="button" onclick="document.getElementById('id05').style.display='none'" class="cancelbtn">Cancel</button>
+            </div>
+        </div>
+    </div>
+
+
 </body>
 </html>

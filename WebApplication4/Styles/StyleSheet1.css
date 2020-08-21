@@ -72,7 +72,7 @@ body {
 
 #adminLNK {
     position: relative;
-    left: 150%;
+    left: 140%;
     top: 90px;
 }
 
@@ -356,7 +356,9 @@ table.blueTable tfoot .links a{
     }
 .packetsTitle
 {
-    text-align:center
+    text-align:center;
+    color:aquamarine;
+        
 
 
 }
