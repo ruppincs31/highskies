@@ -193,6 +193,14 @@ namespace WebApplication4.DAL
                 command = prefix + sb.ToString();
                 return command;
             }
+            else if (currobject is TourCompany)
+            {
+                Order tourCompanyObj = currobject as TourCompany;
+                sb.AppendFormat("Values('{0}', '{1}', '{2}', '{3}')", tourCompanyObj.CompanyUserName, tourCompanyObj.CompanyPassword, tourCompanyObj.CompanyName, tourCompanyObj.CompanyEmail);
+                String prefix = "INSERT INTO TourCompaniesUsers_CS " + "(CompanyUserName, CompanyPassword , CompanyName, CompanyEmail) ";
+                command = prefix + sb.ToString();
+                return command;
+            }
             else
             {
                 return "0";
