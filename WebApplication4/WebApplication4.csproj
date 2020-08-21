@@ -188,6 +188,7 @@
     <Content Include="pages\PacketsForCustomer.html" />
     <Content Include="pages\Manager.html" />
     <Content Include="pages\OrdersTab.html" />
+    <Content Include="pages\ToursTab.html" />
     <Content Include="Scripts\ajaxCalls.js" />
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />
