@@ -174,10 +174,10 @@
     <Compile Include="Models\Leg.cs" />
     <Compile Include="Models\siginRequest.cs" />
     <Compile Include="Models\Order.cs" />
+    <Compile Include="Models\Tour.cs" />
     <Compile Include="Models\TourCompany.cs" />
     <Compile Include="Models\User.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Models\Tours.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Areas\HelpPage\HelpPage.css" />

@@ -66,7 +66,7 @@
 
 
             // once the document is ready we fetch a list of cars from the server
-            ajaxCall("GET", "../api/TourController", null, getSuccess, error);
+            //ajaxCall("GET", "../api/TourCont", null, getSuccess, error);
 
             $("#TourForm").submit(onSubmitFunc); // wire the submit event to a function called f1
 
@@ -93,7 +93,7 @@
                 populateFields(this.getAttribute('data-tourId'));
             });
 
-            $(document).on("click", ".deleteBtn", function () {
+            $(document).on("click", ".delexteBtn", function () {
                 mode = "delete";
                 markSelected(this);
                 var discountId = this.getAttribute('data-tourId');
@@ -119,7 +119,7 @@
         }
 
         function Deletetour(id) {
-            ajaxCall("DELETE", "../api/TourController", id, deleteSuccess, error);
+            ajaxCall("DELETE", "../api/TourCont", id, deleteSuccess, error);
         }
 
 
@@ -127,48 +127,50 @@
 
             var Id = tours.length;
             if (mode == "edit") {
-                Id = Tour.TourId;
+                Id = tours.TourId;
             }
             tourCompany
 
             let tourToSave = {
                 tourId: Id,
-                tourSupplier: $("#tourCompany").val(),
                 city: $("#city").val(),
                 tourTitle: $("#tourTitle").val(),
                 tourDescription: $("#tourDescrip").val(),
                 tourLength: $("#TourLength").val(),
                 tourPrice: $("#Price").val(),
+                tourImage: $("#Image").val()
             }
 
             if (mode == "edit")
-                ajaxCall("PUT", "../api/TourController", JSON.stringify(tourToSave), updateSuccess, error);
+                ajaxCall("PUT", "../api/TourCont", JSON.stringify(tourToSave), updateSuccess, error);
             else if (mode == "new")
-                ajaxCall("POST", "../api/TourController", JSON.stringify(tourToSave), insertSuccess, error);
+                ajaxCall("POST", "../api/TourCont", JSON.stringify(tourToSave), insertSuccess, error);
             return false;
         }
 
         // fill the form fields
         function populateFields(TourId) {
-            tour = gettour(TourId);
-            $('#tourCompany').val(tour.tourSupplier);
-            $('#city').val(tour.city);
+            tour = getTour(TourId);
+            $('#City').val(tour.city);
+            $('#Country').val(tour.city)
             $('#tourTitle').val(tour.tourTitle);
             $('#tourDescrip').val(tour.tourDescription);
             $('#TourLength').val(tour.tourLength);
             $('#Price').val(tour.Price);
+            $('Image').val(tour.tourImage);
         }
 
        
 
         // fill the form fields
         function clearFields() {
-            $('#tourCompany').val("");
-            $('#city').val("");
+            $('#City').val("");
+            $('#Country').val("");
             $('#tourTitle').val("");
             $('#tourDescrip').val("");
             $('#TourLength').val("");
             $('#Price').val("");
+            $("Image").val("");
         }
 
         // get a car according to its Id
@@ -240,12 +242,12 @@
                             }
                         },
                         { data: "TourId" },
-                        { data: "tourCompany" },
                         { data: "city" },
                         { data: "tourTitle" },
                         { data: "tourDescrip" },
                         { data: "TourLength" },
-                        { data: "Price" }
+                        { data: "Price" },
+                        {data:"Image(URL)"}
                     ],
                 });
                 buttonEvents();
@@ -288,13 +290,13 @@
                     <tr>
                         <th></th>
                         <th>Tour Id</th>
-                        <th>Tour Supplier</th>
                         <th>Country</th>
                         <th>City</th>
                         <th>Tour Title</th>
                         <th>Tour Description</th>
                         <th>Tour Length (in Hrs)</th>
                         <th>Price (in Euros)</th>
+                        <th>Image</th>
                     </tr>
                 </thead>
             </table>
@@ -304,46 +306,45 @@
         <div id="editDiv">
             <form id="TourForm">
                 <div class="form-group row">
-                    <div class="form-group col-sm-4">
-                        <label for="Airline"><span class="red-star">★ </span>Tour Supplier</label>
-                        <input type="text" class="form-control" id="tourCompany" placeholder="Enter Tour company" required>
-                    </div>
-
 
                     <div class="form-group col-sm-4">
-                        <label for="departureAirport"><span class="red-star">★ </span>Country</label>
+                        <label for="Country"><span class="red-star">★ </span>Country</label>
                         <input type="text" class="form-control" id="Country" placeholder="Enter the Country" required>
                     </div>
 
-                    
+
                     <div class="form-group col-sm-4">
-                        <label for="arivalAirport"><span class="red-star">★ </span>City</label>
+                        <label for="City"><span class="red-star">★ </span>City</label>
                         <input type="text" class="form-control" id="city" placeholder="Enter the City" required>
                     </div>
-
+                    <div class="form-group col-sm-4">
+                        <label for="TourTitler"><span class="red-star">★ </span>Tour title</label>
+                        <input type="text" class="form-control" id="tourTitle" placeholder="Enter tour title" required>
+                    </div>
                 </div>
 
                 <div class="form-group row">
 
-                    <div class="form-group col-sm-4">
-                        <label for="departureDate"><span class="red-star">★ </span>Tour title</label>
-                        <input type="text" class="form-control" id="tourTitle" placeholder="Enter tour title" required>
-                    </div>
+                    
 
                     <div class="form-group col-sm-4">
-                        <label for="arivalDate"><span class="red-star">★ </span>Tour Description</label>
-                        <input type="text" class="form-control" id="tourDescrip" placeholder="Enter tour description" required>
-                    </div>
-
-                    <div class="form-group col-sm-4">
-                        <label for="discount"><span class="red-star">★ </span>Tour Length</label>
+                        <label for="TourLength"><span class="red-star">★ </span>Tour Length</label>
                         <input type="number" class="form-control" id="TourLength" placeholder="Enter tour Length" required />
                     </div>
                     <div class="form-group col-sm-4">
-                        <label for="discount"><span class="red-star">★ </span>Price</label>
+                        <label for="Price"><span class="red-star">★ </span>Price</label>
                         <input type="number" class="form-control" id="Price" placeholder="Enter tour price" required />
                     </div>
+                    <div class="form-group col-sm-4">
+                        <label for="arivalDate"><span class="red-star">★ </span>Image</label>
+                        <input type="text" class="form-control" id="Image" placeholder="Enter tour description" required>
+                    </div>
 
+
+                    <div class="form-group col-sm-4">
+                        <label for="arivalDate"><span class="red-star">★ </span>Tour Description</label>
+                        <textarea rows="6" cols="50" name="comment" form="TourForm"> Enter tour Description</textarea>
+                    </div>
 
                 </div>
 

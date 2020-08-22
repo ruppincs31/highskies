@@ -16,10 +16,10 @@ namespace WebApplication4.Controllers
             return Tour.getTour();
         }
 
-        public string Get(int id)
-        {
-            return "value";
-        }
+        //public string Get(int id)
+        //{
+        //    return "value";
+        //}
 
         public IEnumerable<Tour> Post([FromBody]Tour tour)
         {

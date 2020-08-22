@@ -250,6 +250,14 @@ namespace WebApplication4.DAL
                 command = prefix + sb.ToString();
                 return command;
             }
+            else if (currobject is Tour)
+            {
+                Tour tourObj = currobject as Tour;
+                sb.AppendFormat("Values('{0}', '{1}', '{2}', '{3},{4}', '{5}', '{6}', '{7}')", tourObj.TourId,tourObj.TourLength,tourObj.TourPrice,tourObj.Country,tourObj.City,tourObj.TourTitle,tourObj.TourDescription,tourObj.ImgURL);
+                String prefix = "INSERT INTO TourCompaniesUsers_CS " + "(TourId , TourLength  , TourPrice  ,Country  , City   , TourTitle , TourDescription ,TourImgURL ) ";
+                command = prefix + sb.ToString();
+                return command;
+            }
             else
             {
                 return "0";
