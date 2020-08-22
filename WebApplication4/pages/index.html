@@ -323,15 +323,16 @@
             var TourCompanyName = loginFormInputs[3].value;
             if (ValidateEmail(userEmail)) {
 
-                    TourCompanyO = {
-                        userName: userName,
-                        userPassword: userPassword,
-                        userEmail: userEmail,
-                        TourCompanyName: TourCompanyName
-                        
+                TourCompanyO = {
+                    userName: userName,
+                    userPassword: userPassword,
+                    userEmail: userEmail,
+                    TourCompanyName: TourCompanyName
+
                 }
                 Swal.fire('Thanks for signing up!');
                 ajaxCall("POST", '../api/TourCompany', JSON.stringify(TourCompanyO), orderSuccess, null);
+            }
         }
 
 
