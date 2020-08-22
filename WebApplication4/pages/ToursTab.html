@@ -66,9 +66,9 @@
 
 
             // once the document is ready we fetch a list of cars from the server
-            ajaxCall("GET", "../api/discount", null, getSuccess, error);
+            ajaxCall("GET", "../api/TourController", null, getSuccess, error);
 
-            $("#discountForm").submit(onSubmitFunc); // wire the submit event to a function called f1
+            $("#TourForm").submit(onSubmitFunc); // wire the submit event to a function called f1
 
             $("#editDiv").hide();
         });
@@ -118,70 +118,86 @@
             row.className = 'selected'; // mark as selected
         }
 
-        function DeleteDiscount(id) {
-            ajaxCall("DELETE", "../api/discount", id, deleteSuccess, error);
+        function Deletetour(id) {
+            ajaxCall("DELETE", "../api/TourController", id, deleteSuccess, error);
         }
+
+
+
+        
+
+        
+
 
         function onSubmitFunc() {
 
-            var Id = discounts.length;
+            var Id = tours.length;
             if (mode == "edit") {
-                Id = discount.DiscountId;
+                Id = Tour.TourId;
             }
+            tourCompany
 
-
-            let discounttoSave = {
-                discountId: Id,
-                airlineCode: $("#airline").val(),
-                airportFrom: $("#departureAirport").val(),
-                airportTo: $("#arivalAirport").val(),
-                dateFrom: $("#departureDate").val(),
-                dateTo: $("#arivalDate").val(),
-                discountValue: $("#discount").val(),
+            let tourToSave = {
+                tourId: Id,
+                tourSupplier: $("#tourCompany").val(),
+                city: $("#city").val(),
+                tourTitle: $("#tourTitle").val(),
+                tourDescription: $("#tourDescrip").val(),
+                tourLength: $("#TourLength").val(),
+                tourPrice: $("#Price").val(),
             }
 
             if (mode == "edit")
-                ajaxCall("PUT", "../api/discount", JSON.stringify(discounttoSave), updateSuccess, error);
+                ajaxCall("PUT", "../api/TourController", JSON.stringify(discounttoSave), updateSuccess, error);
             else if (mode == "new")
-                ajaxCall("POST", "../api/discount", JSON.stringify(discounttoSave), insertSuccess, error);
+                ajaxCall("POST", "../api/TourController", JSON.stringify(discounttoSave), insertSuccess, error);
             return false;
         }
 
         // fill the form fields
-        function populateFields(discountId) {
-            discount = getDiscount(discountId);
-            $('#airline').val(discount.AirlineCode);
-            $('#departureAirport').val(discount.AirportFrom);
-            $('#arivalAirport').val(discount.AirportTo);
-            $('#departureDate').val(new Date(discount.DateFrom));
-            $('#arivalDate').val(new Date(discount.DateTo));
-            $('#discount').val(discount.DiscountValue);
+        function populateFields(TourId) {
+            tour = gettour(TourId);
+            $('#tourCompany').val(discount.AirlineCode);
+            $('#city').val(discount.AirportFrom);
+            $('#tourTitle').val(discount.AirportTo);
+            $('#tourDescrip').val(new Date(discount.DateFrom));
+            $('#TourLength').val(new Date(discount.DateTo));
+            $('#Price').val(discount.DiscountValue);
         }
 
+        this.tourId = tourId;
+        this.tourLength = tourLength;
+        this.tourPrice = tourPrice;
+        this.tourSupplier = tourSupplier;
+        this.country = country;
+        this.city = city;
+        this.tourTitle = tourTitle;
+        this.tourDescription = tourDescription;
+        this.ImgURL = imgURL;
 
         // fill the form fields
         function clearFields() {
-            $('#airline').val("");
-            $('#departureAirport').val("");
-            $('#arivalAirport').val("");
-            $('#departureDate').val("");
-            $('#arivalDate').val("");
-            $('#discount').val("");
+            $('#tourCompany').val("");
+            $('#city').val("");
+            $('#tourTitle').val("");
+            $('#tourDescrip').val("");
+            $('#TourLength').val("");
+            $('#Price').val("");
         }
 
         // get a car according to its Id
-        function getDiscount(id) {
-            for (i in discounts) {
-                if (discounts[i].DiscountId == id)
-                    return discounts[i];
+        function getTour(id) {
+            for (i in tours) {
+                if (tours[i].TourId == id)
+                    return tours[i];
             }
             return null;
         }
 
         // success callback function after update
-        function updateSuccess(discountsdata) {
+        function updateSuccess(tourstdata) {
             tbl.clear();
-            redrawTable(tbl, discountsdata);
+            redrawTable(tbl, tourstdata);
             buttonEvents();
             $("#editDiv").hide();
             swal("Updated Successfuly!", "Great Job", "success");
@@ -189,10 +205,10 @@
         }
 
         // success callback function after update
-        function insertSuccess(discountdata) {
+        function insertSuccess(tourstdata) {
             $("#pForm").show();
             tbl.clear();
-            redrawTable(tbl, discountdata);
+            redrawTable(tbl, tourstdata);
             buttonEvents();
             $("#editDiv").hide();
             swal("Inserted Successfuly!", "Great Job", "success");
@@ -200,9 +216,9 @@
         }
 
         // success callback function after delete
-        function deleteSuccess(discountdata) {
+        function deleteSuccess(tourstdata) {
             tbl.clear();
-            redrawTable(tbl, discountdata);
+            redrawTable(tbl, tourstdata);
             buttonEvents(); // after redrawing the table, we must wire the new buttons
             $("#editDiv").hide();
             swal("Deleted Successfuly!", "Great Job", "success");
@@ -219,11 +235,12 @@
         }
 
         // this function is activated in case of a success
-        function getSuccess(discountdata) {
-            discounts = discountdata;
+        function getSuccess(toursdata) {
+            tours = toursdata;
+            
             try {
                 tbl = $('#toursTable').DataTable({
-                    data: discountdata,
+                    data: toursdata,
                     pageLength: 5,
                     columns: [
                         {
@@ -236,13 +253,13 @@
                                 return editBtn + viewBtn + deleteBtn;
                             }
                         },
-                        { data: "DiscountId" },
-                        { data: "AirlineCode" },
-                        { data: "AirportFrom" },
-                        { data: "AirportTo" },
-                        { data: "DateFrom" },
-                        { data: "DateTo" },
-                        { data: "DiscountValue" }
+                        { data: "TourId" },
+                        { data: "tourCompany" },
+                        { data: "city" },
+                        { data: "tourTitle" },
+                        { data: "tourDescrip" },
+                        { data: "TourLength" },
+                        { data: "Price" }
                     ],
                 });
                 buttonEvents();
@@ -299,23 +316,23 @@
         </form>
 
         <div id="editDiv">
-            <form id="discountForm">
+            <form id="TourForm">
                 <div class="form-group row">
                     <div class="form-group col-sm-4">
-                        <label for="Airline"><span class="red-star">★ </span>Airline</label>
-                        <input type="text" class="form-control" id="airline" placeholder="Enter the airline name" required>
+                        <label for="Airline"><span class="red-star">★ </span>Tour Supplier</label>
+                        <input type="text" class="form-control" id="tourCompany" placeholder="Enter Tour company" required>
                     </div>
 
 
                     <div class="form-group col-sm-4">
-                        <label for="departureAirport"><span class="red-star">★ </span>Departure Airport</label>
-                        <input type="text" class="form-control" id="departureAirport" placeholder="Enter the departure airport" required>
+                        <label for="departureAirport"><span class="red-star">★ </span>Country</label>
+                        <input type="text" class="form-control" id="Country" placeholder="Enter the Country" required>
                     </div>
 
-
+                    
                     <div class="form-group col-sm-4">
-                        <label for="arivalAirport"><span class="red-star">★ </span>Arival Airport</label>
-                        <input type="text" class="form-control" id="arivalAirport" placeholder="Enter the arival airport" required>
+                        <label for="arivalAirport"><span class="red-star">★ </span>City</label>
+                        <input type="text" class="form-control" id="city" placeholder="Enter the City" required>
                     </div>
 
 
@@ -326,19 +343,24 @@
                 <div class="form-group row">
 
                     <div class="form-group col-sm-4">
-                        <label for="departureDate"><span class="red-star">★ </span>Departure Date</label>
-                        <input type="date" class="form-control" id="departureDate" required />
+                        <label for="departureDate"><span class="red-star">★ </span>Tour title</label>
+                        <input type="text" class="form-control" id="tourTitle" placeholder="Enter tour title" required>
                     </div>
 
                     <div class="form-group col-sm-4">
-                        <label for="arivalDate"><span class="red-star">★ </span>Arival Date</label>
-                        <input type="date" class="form-control" id="arivalDate" required />
+                        <label for="arivalDate"><span class="red-star">★ </span>Tour Description</label>
+                        <input type="text" class="form-control" id="tourDescrip" placeholder="Enter tour description" required>
                     </div>
 
                     <div class="form-group col-sm-4">
-                        <label for="discount"><span class="red-star">★ </span>Discount</label>
-                        <input type="number" class="form-control" id="discount" placeholder="Enter the discount" required />
+                        <label for="discount"><span class="red-star">★ </span>Tour Length</label>
+                        <input type="number" class="form-control" id="TourLength" placeholder="Enter tour Length" required />
                     </div>
+                    <div class="form-group col-sm-4">
+                        <label for="discount"><span class="red-star">★ </span>Price</label>
+                        <input type="number" class="form-control" id="Price" placeholder="Enter tour price" required />
+                    </div>
+
 
                 </div>
 
