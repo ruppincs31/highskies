@@ -61,7 +61,10 @@ namespace WebApplication4.Models
             DBservices db = new DBservices();
             return db.editTour(this);
         }
+<<<<<<< HEAD
 
+=======
+>>>>>>> 6fa29fd9a757d972dddf915be6789e37c15aa881
     }
 }
 

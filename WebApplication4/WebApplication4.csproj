@@ -178,6 +178,10 @@
     <Compile Include="Models\TourCompany.cs" />
     <Compile Include="Models\User.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+<<<<<<< HEAD
+=======
+    <Compile Include="Models\Tour.cs" />
+>>>>>>> 6fa29fd9a757d972dddf915be6789e37c15aa881
   </ItemGroup>
   <ItemGroup>
     <Content Include="Areas\HelpPage\HelpPage.css" />
