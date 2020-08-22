@@ -201,9 +201,9 @@
         }
         function getSignupForm() {
             document.getElementById('id04').style.display = 'none';
-
             document.getElementById('id05').style.display = 'block';
         }
+
         var heroShinker = function () {
             var hero = $('.hero-nav'),
                 heroHeight = $('.hero-nav').outerHeight(true);
@@ -329,24 +329,18 @@
             if (ValidateEmail(userEmail)) {
 
                 TourCompanyO = {
-                    userName: userName,
-                    userPassword: userPassword,
-                    userEmail: userEmail,
-                    TourCompanyName: TourCompanyName
-
+                    companyUserName: userName,
+                    companyPassword: userPassword,
+                    companyEmail: userEmail,
+                    companyName: TourCompanyName
                 }
                 Swal.fire('Thanks for signing up!');
-<<<<<<< HEAD
                 ajaxCall("POST", '../api/TourCompany', JSON.stringify(TourCompanyO), SignUpSuccess(), null);
                 return;
-=======
-                ajaxCall("POST", '../api/TourCompany', JSON.stringify(TourCompanyO), orderSuccess, null);
->>>>>>> e94674d416c3f1060e61dbba5743d1e9aaf780a7
             }
         }
         function SignUpSuccess() {
             $("#id05")[0].style.display = 'none';
-
         }
 
 </script>
