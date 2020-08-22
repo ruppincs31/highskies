@@ -317,10 +317,10 @@ namespace WebApplication4.DAL
 
             }
         }
-        public List<Tour> getTour()
+        public List<Tour> getTours()
         {
             SqlConnection con = null;
-
+            string companyName = (string)(HttpContext.Current.Session["companyName"]);
             try
             {
 
@@ -343,7 +343,17 @@ namespace WebApplication4.DAL
                     tour.City = (string)dr["City"];
                     tour.TourDescription = (string)dr["TourDescription"];
                     tour.ImgURL = (string)dr["TourImgURL"];
-                    list.Add(tour);
+                    if (tour.TourSupplier == "All") {
+                        list.Add(tour);
+                    }
+                    else if (tour.TourSupplier != companyName)
+                    {
+                        continue;
+                    }
+                    else
+                    {
+                        list.Add(tour);
+                    }
                 }
                 return list;
             }

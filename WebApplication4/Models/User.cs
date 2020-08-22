@@ -34,6 +34,7 @@ namespace WebApplication4.Models
             {
                 if (currUser.UserName == this.UserName && currUser.UserPassword == this.UserPassword)
                 {
+                    HttpContext.Current.Session["companyName"] = "All";
                     return true;
                 }
             }

@@ -6,6 +6,7 @@ using System.Net.Http;
 using System.Web.Http;
 using WebApplication4.DAL;
 using WebApplication4.Models;
+using System.Web;
 
 namespace WebApplication4.Controllers
 
@@ -23,18 +24,18 @@ namespace WebApplication4.Controllers
         [Route("api/tourcompany/login")]
         public TourCompany Post([FromBody]siginRequest requestData)
         {
-            return requestData.signin();
+            TourCompany currCompany = requestData.signin();
+            HttpContext.Current.Session["companyName"] = currCompany.CompanyName;
+            return currCompany;
         }
 
         public IEnumerable<TourCompany> getTourCompany()
         {
             return TourCompany.getTourCompanies();
         }
+<<<<<<< HEAD
 
+=======
+>>>>>>> 72d4be491b2e5ff0e8f8edb10118554cd5f22251
     }
-
-
-
-
-
 }
