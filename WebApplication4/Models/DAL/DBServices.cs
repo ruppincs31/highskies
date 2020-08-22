@@ -132,6 +132,55 @@ namespace WebApplication4.DAL
             return insert(discount).ToString();
         }
 
+        public string deleteTour(int tourId)
+        {
+
+            SqlConnection con;
+            SqlCommand cmd;
+
+            try
+            {
+                con = connect("DBConnectionString"); // create the connection
+            }
+            catch (Exception ex)
+            {
+                // write to log
+                throw (ex);
+
+            }
+
+            String cStr = "DELETE FROM Tour_CS where tourId = " + tourId;      // helper method to build the insert string
+
+            cmd = CreateCommand(cStr, con);             // create the command
+
+            try
+            {
+                string numEffected = (string)cmd.ExecuteScalar(); // execute the command
+
+                return numEffected;
+            }
+            catch (Exception ex)
+            {
+                // write to log
+                throw (ex);
+            }
+
+            finally
+            {
+                if (con != null)
+                {
+                    // close the db connection
+                    con.Close();
+                }
+            }
+
+        }
+        public string editTour(Tour tour)
+        {
+            deleteTour(tour.TourId);
+            return insert(tour).ToString();
+        }
+
         //--------------------------------------------------------------------
         // Build the Insert command String
         //--------------------------------------------------------------------
@@ -268,6 +317,50 @@ namespace WebApplication4.DAL
 
             }
         }
+        public List<Tour> getTour()
+        {
+            SqlConnection con = null;
+
+            try
+            {
+
+                con = connect("DBConnectionString"); // create a connection to the database using the connection String defined in the web config file
+
+                String selectSTR = "select * from Tour_CS";
+                SqlCommand cmd = new SqlCommand(selectSTR, con);
+
+                // get a reader
+                SqlDataReader dr = cmd.ExecuteReader(CommandBehavior.CloseConnection); // CommandBehavior.CloseConnection: the connection will be closed after reading has reached the end
+                List<Tour> list = new List<Tour>();
+                while (dr.Read())
+                {   // Read till the end of the data into a row
+                    ////////////////////Discount discount = new Discount();
+                    ////////////////////discount.DiscountId = (int)dr["DiscountId"];
+                    ////////////////////discount.AirlineCode = (string)dr["AirlineCode"];
+                    ////////////////////discount.AirportFrom = (string)dr["AirportFrom"];
+                    ////////////////////discount.AirportTo = (string)dr["AirportTo"];
+                    ////////////////////discount.DateFrom = (DateTime)dr["DateFrom"];
+                    ////////////////////discount.DateTo = (DateTime)dr["DateTo"];
+                    ////////////////////discount.DiscountValue = (int)dr["discountValue"];
+                    ////////////////////list.Add(discount);
+                }
+                return list;
+            }
+            catch (Exception ex)
+            {
+                // write to log
+                throw (ex);
+            }
+            finally
+            {
+                if (con != null)
+                {
+                    con.Close();
+                }
+
+            }
+        }
+
 
         public List<Order> getOrder()
         {

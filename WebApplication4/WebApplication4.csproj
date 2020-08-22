@@ -161,6 +161,7 @@
     <Compile Include="Controllers\FlightController.cs" />
     <Compile Include="Controllers\OrderController.cs" />
     <Compile Include="Controllers\TourCompanyController.cs" />
+    <Compile Include="Controllers\TourController.cs" />
     <Compile Include="Controllers\UserController.cs" />
     <Compile Include="Models\DAL\DBServices.cs" />
     <Compile Include="Global.asax.cs">
