@@ -12,7 +12,6 @@ namespace WebApplication4.Controllers
     {
         public bool Post([FromBody]User currUser)
         {
-            
             return currUser.login();
         }
     }

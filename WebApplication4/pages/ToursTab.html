@@ -123,12 +123,6 @@
         }
 
 
-
-        
-
-        
-
-
         function onSubmitFunc() {
 
             var Id = tours.length;
@@ -148,9 +142,9 @@
             }
 
             if (mode == "edit")
-                ajaxCall("PUT", "../api/TourController", JSON.stringify(discounttoSave), updateSuccess, error);
+                ajaxCall("PUT", "../api/TourController", JSON.stringify(tourToSave), updateSuccess, error);
             else if (mode == "new")
-                ajaxCall("POST", "../api/TourController", JSON.stringify(discounttoSave), insertSuccess, error);
+                ajaxCall("POST", "../api/TourController", JSON.stringify(tourToSave), insertSuccess, error);
             return false;
         }
 
@@ -335,9 +329,6 @@
                         <input type="text" class="form-control" id="city" placeholder="Enter the City" required>
                     </div>
 
-
-
-
                 </div>
 
                 <div class="form-group row">
@@ -370,9 +361,6 @@
         </div>
 
     </div>
-
-
-
 
 </body>
 </html>
