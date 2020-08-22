@@ -39,10 +39,7 @@ namespace WebApplication4.Models
         public int TourPrice { get => tourPrice; set => tourPrice = value; }
         public string ImgURL { get => imgURL; set => imgURL = value; }
 
-<<<<<<< HEAD
 
-=======
->>>>>>> 345083b75d52f96f45067975a37f0dcbf0ceca77
         public static List<Tour> getTour()
         {
             DBservices db = new DBservices();
@@ -65,10 +62,8 @@ namespace WebApplication4.Models
             return db.editTour(this);
         }
 
-<<<<<<< HEAD
 
-=======
     }
->>>>>>> 345083b75d52f96f45067975a37f0dcbf0ceca77
+
     }
-}
+
