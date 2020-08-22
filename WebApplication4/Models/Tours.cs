@@ -39,30 +39,6 @@ namespace WebApplication4.Models
         public int TourPrice { get => tourPrice; set => tourPrice = value; }
         public string ImgURL { get => imgURL; set => imgURL = value; }
 
-<<<<<<< HEAD
-
-        //public static List<Tour> getTour()
-        //{
-        //    DBservices db = new DBservices();
-        //    return db.getTour();
-        //}
-
-        //public int insertTour()
-        //{
-        //    DBservices db = new DBservices();
-        //    return db.insert(this);
-        //}
-        //public static string deleteTour(int id)
-        //{
-        //    DBservices db = new DBservices();
-        //    return db.deleteTour(id);
-        //}
-        //public string editTour()
-        //{
-        //    DBservices db = new DBservices();
-        //    return db.editTour(this);
-        //}
-=======
         public static List<Tour> getTour()
         {
             DBservices db = new DBservices();
@@ -85,6 +61,5 @@ namespace WebApplication4.Models
             return db.editTour(this);
         }
 
->>>>>>> 6f28c72ecb71cc1d5011c0b4eca5fff740b67e9f
     }
     }

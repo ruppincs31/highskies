@@ -274,9 +274,6 @@
             }
         }
 
-
-       
-
         function orderSuccess() {
             $("#id02")[0].style.display = 'none'
         }
@@ -298,6 +295,31 @@
                 UserPassword: userPassword
             }
             ajaxCall("POST", '../api/user', JSON.stringify(userO), loginCallback, null);
+        }
+
+        function signInAttempt() {
+            var loginFormInputs = document.getElementById('signInForm').getElementsByTagName('input')
+            var userName = loginFormInputs[0].value;
+            var userPassword = loginFormInputs[1].value;
+            signinO = {
+                userName: userName,
+                userPassword: userPassword
+            }
+            ajaxCall("POST", '../api/TourCompany/login', JSON.stringify(signinO), signinCallback, null);
+        }
+
+        function signinCallback(result) {
+            if (result) {
+                debugger;
+                window.location.replace('ToursTab.html')
+                return;
+            }
+            else {
+                Swal.fire('Wrong credentials!',
+                    'Try Again!',
+                    'error'
+                )
+            }
         }
 
         function loginCallback(result) {
@@ -483,7 +505,7 @@
 
                 <label for="psw"><b>Password</b></label>
                 <input type="password" placeholder="Enter Password" name="psw" required>
-                <button onclick="signIn()">Sign in</button>
+                <button onclick="signInAttempt()">Sign in</button>
                 <h6>You didnt sign up yet? No problem!</h6>
                 <button onclick="getSignupForm()">Sign up here</button>
             </div>
