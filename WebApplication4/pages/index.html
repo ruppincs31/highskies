@@ -329,18 +329,10 @@
             if (ValidateEmail(userEmail)) {
 
                 TourCompanyO = {
-<<<<<<< HEAD
-                    CompanyuserName: userName,
-                    CompanyPassword: userPassword,
-                    CompanyEmail: userEmail,
-                    CompanyName: TourCompanyName
-
-=======
                     companyUserName: userName,
                     companyPassword: userPassword,
                     companyEmail: userEmail,
                     companyName: TourCompanyName
->>>>>>> 6f28c72ecb71cc1d5011c0b4eca5fff740b67e9f
                 }
                 Swal.fire('Thanks for signing up!');
                 ajaxCall("POST", '../api/TourCompany', JSON.stringify(TourCompanyO), SignUpSuccess(), null);
