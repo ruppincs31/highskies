@@ -329,21 +329,20 @@
             if (ValidateEmail(userEmail)) {
 
                 TourCompanyO = {
-                    userName: userName,
-                    userPassword: userPassword,
-                    userEmail: userEmail,
-                    TourCompanyName: TourCompanyName
+                    CompanyuserName: userName,
+                    CompanyPassword: userPassword,
+                    CompanyEmail: userEmail,
+                    CompanyName: TourCompanyName
 
                 }
                 Swal.fire('Thanks for signing up!');
-<<<<<<< HEAD
                 ajaxCall("POST", '../api/TourCompany', JSON.stringify(TourCompanyO), SignUpSuccess(), null);
                 return;
-=======
-                ajaxCall("POST", '../api/TourCompany', JSON.stringify(TourCompanyO), orderSuccess, null);
->>>>>>> e94674d416c3f1060e61dbba5743d1e9aaf780a7
             }
         }
+
+        
+
         function SignUpSuccess() {
             $("#id05")[0].style.display = 'none';
 
@@ -474,7 +473,7 @@
 
     <div id="id04" class="modal" onsubmit="orderSubmit(event)">
 
-        <div class="modal-content animate" id="loginForm">
+        <div class="modal-content animate" id="signInForm">
             <div class="imgcontainer">
                 <span onclick="document.getElementById('id01').style.display='none'" class="close" title="Close Modal">&times;</span>
                 <img src="https://www.w3schools.com/howto/img_avatar.png" alt="Avatar" class="avatar">
@@ -486,9 +485,6 @@
 
                 <label for="psw"><b>Password</b></label>
                 <input type="password" placeholder="Enter Password" name="psw" required>
-
-                <label for="psw"><b>Tour company</b></label>
-                <input type="text" placeholder="Enter Company name" name="psw" required>
                 <button onclick="signIn()">Sign in</button>
                 <h6>You didnt sign up yet? No problem!</h6>
                 <button onclick="getSignupForm()">Sign up here</button>

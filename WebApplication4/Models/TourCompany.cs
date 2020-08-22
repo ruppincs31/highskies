@@ -37,7 +37,8 @@ namespace WebApplication4.Models
         public int insertTourCompanies()
         {
             DBservices db = new DBservices();
-            return db.insert(this);
+            int numAffected= db.insert(this);
+            return numAffected;
         }
 
 
