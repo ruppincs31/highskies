@@ -11,6 +11,7 @@
     <script>
         var flightsData;
         var discountsData;
+        var selectedFlight;
 
         $(document).ready(function () {
             $("#postBTN").click(postFlight);
@@ -147,6 +148,7 @@
         function renderFlights(flightsData) {
             let flightStr = "<tr><th></th><th>Flight Price</th><th>Departure Time</th><th>Arival Time</th><th>From</th><th>To</th><th>Stops</th></tr>";
             convertDiscountTimes();
+            flightsData = flightsData;
             for (var i = 0; i < flightsData.data.length; i++) {
                 flightsData.data[i].p1 = 0;
                 for (var k = 0; k < discountsData.length; k++) {
@@ -166,7 +168,7 @@
                     stopsStr += "Stop" + j + ": " + flightsData.data[i].route[j].cityFrom + "</br>";
                 }
                 if (flightsData.data[i].p1 == 1 ) {
-                    flightStr += "<tr><td><input type='button' onclick='getFormId()' style='width:auto' class='addButtons' id='" + i + "' value='Order Flight'/></td>"
+                    flightStr += "<tr><td><input type='button' onclick='getFormId(" + i + ")' style='width:auto' class='addButtons' id='" + i + "' value='Order Flight'/></td>"
                         + "<td>" + (flightsData.data[i].conversion[flightsData.currency] * (1 - (discountsData[flightsData.data[i].p2].DiscountValue / 100))) + " " + flightsData.currency + "</br>" + discountsData[flightsData.data[i].p2].DiscountValue + "% Discount</td>"
                         + "<td>" + new Date(flightsData.data[i].dTime * 1000) + "</td>"
                         + "<td>" + new Date(flightsData.data[i].aTime * 1000) + "</td>"
@@ -177,7 +179,7 @@
                     
                 }
                 else {
-                    flightStr += "<tr><td><input type='button' onclick='getFormId()' style='width:auto' class='addButtons' id='" + i + "' value='Order Flight'/></td>"
+                    flightStr += "<tr><td><input type='button' onclick='getFormId(" + i + ")' style='width:auto' class='addButtons' id='" + i + "' value='Order Flight'/></td>"
                         + "<td>" + flightsData.data[i].conversion[flightsData.currency] + " " + flightsData.currency + "</td>"
                         + "<td>" + new Date(flightsData.data[i].dTime * 1000) + "</td>"
                         + "<td>" + new Date(flightsData.data[i].aTime * 1000) + "</td>"
@@ -190,15 +192,11 @@
             $("#tablePH").html(flightStr);
         }
 
-        function getFormId() {
+        function getFormId(flightId) {
+            selectedFlight = flightId;
             document.getElementById('id02').style.display = 'block';
         }
 
-        function getNewFormId() {
-            
-                document.getElementById('id03').style.display = 'block';
-           
-        }
         function getSignupForm() {
             document.getElementById('id04').style.display = 'none';
             document.getElementById('id05').style.display = 'block';
@@ -229,16 +227,7 @@
         //    }
         //    }
 
-
-
-        function closetheSuggest() {
-           
-            document.getElementById('id03').style.display = 'none';
-            completeOrder();
-        }
-        
-
-        function completeOrder() {
+        async function completeOrder() {
             var orderFormInputs = document.getElementById('orderForm').getElementsByTagName('input')
             var passengersNames = orderFormInputs[0].value;
             var passengerEmail = orderFormInputs[1].value;
@@ -250,11 +239,9 @@
                         passengerEmail: passengerEmail,
                         orderDate: orderDate
                     }
-                    closetheSuggest();
-                    Swal.fire('Order completed succesfully!',
+                    await Swal.fire('Order completed succesfully!',
                         'Thank you for booking your flight with High Skies',
                         'success')
-                    document.getElementById('id03').style.display = 'none'
                     ajaxCall("POST", '../api/order', JSON.stringify(passengerO), orderSuccess, null);
                 }
                 else {
@@ -275,7 +262,23 @@
         }
 
         function orderSuccess() {
-            $("#id02")[0].style.display = 'none'
+            $("#id02")[0].style.display = 'none';
+            if (true) {
+                Swal.fire({
+                      title: 'Special offers',
+                      text: "We have noticed that you have alot of time to kill between flights.\n Are u intrested in our special tours?",
+                      icon: 'info',
+                      showCancelButton: true,
+                      confirmButtonColor: '#3085d6',
+                      cancelButtonColor: '#d33',
+                      confirmButtonText: 'Yes, i want to hear more',
+                      cancelButtonText: "No, I'm good"
+                    }).then((result) => {
+                        if (result.value) {
+                           //flightsData[selectedFlight];
+                      }
+                    })
+            }
         }
 
         function ValidateEmail(mail) {
@@ -310,7 +313,6 @@
 
         function signinCallback(result) {
             if (result) {
-                debugger;
                 window.location.replace('ToursTab.html')
                 return;
             }
@@ -465,7 +467,7 @@
                     <input type="checkbox" name="remember" required> I agree to the High Skies terms and conditions
                 </label>
                 <br />
-                <button onclick="getNewFormId()">Complete Order</button>
+                <button onclick="completeOrder()">Complete Order</button>
             </div>
 
             <div class="container" style="background-color:#f1f1f1">
@@ -474,7 +476,7 @@
         </div>
     </form>
 
-    <form id="id03" class="modal" onsubmit="orderSubmit(event)">
+    <!--<form id="id03" class="modal" onsubmit="orderSubmit(event)">
 
         <div class="modal-content animate" id="orderForm">
             <div class="imgcontainer">
@@ -490,7 +492,7 @@
                 <button type="button" onclick="closetheSuggest()" class="cancelbtn">Cancel</button>
             </div>
         </div>
-    </form>
+    </form>-->
 
 
     <div id="id04" class="modal" onsubmit="orderSubmit(event)">

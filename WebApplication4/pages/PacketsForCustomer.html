@@ -8,7 +8,53 @@
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@9"></script>
     <link href="../Styles/StyleSheet1.css" rel="stylesheet" />
     <script>
-        
+        $(document).ready(function () {
+            getTours();
+        });
+
+
+        function getTours() {
+            ajaxCall("GET", "../api/tour", null, renderTours, null);
+        }
+
+        function renderTours(toursData) {
+            let tourStr = "<tr><th></th><th>Flight Price</th><th>Departure Time</th><th>Arival Time</th><th>From</th><th>To</th><th>Stops</th></tr>";
+            for (var i = 0; i < toursData.length; i++) {
+                toursData.data[i].p1 = 0;
+                for (var k = 0; k < discountsData.length; k++) {
+                    if (toursData.data[i].route.length == 1) {
+                        if ((toursData.data[i].airlines[0] == discountsData[k].AirlineCode) &&
+                            (toursData.data[i].flyFrom == discountsData[k].AirportFrom) &&
+                            (toursData.data[i].flyTo == discountsData[k].AirportTo) &&
+                            (toursData.data[i].dTime <= discountsData[k].DateFrom) &&
+                            (toursData.data[i].dTime >= discountsData[k].DateTo)) {
+                            toursData.data[i].p1 = 1;
+                            toursData.data[i].p2 = k;
+                        }
+                    }
+                }
+                if (toursData.data[i].p1 == 1 ) {
+                    flightStr += "<tr><td><input type='button' onclick='getFormId()' style='width:auto' class='addButtons' id='" + i + "' value='Order Flight'/></td>"
+                        + "<td>" + (toursData.data[i].conversion[toursData.currency] * (1 - (discountsData[toursData.data[i].p2].DiscountValue / 100))) + " " + toursData.currency + "</br>" + discountsData[toursData.data[i].p2].DiscountValue + "% Discount</td>"
+                        + "<td>" + new Date(toursData.data[i].dTime * 1000) + "</td>"
+                        + "<td>" + new Date(toursData.data[i].aTime * 1000) + "</td>"
+                        + "<td>" + toursData.data[i].cityFrom + "</td>"
+                        + "<td>" + toursData.data[i].cityTo + "</td>"
+                        + "<td>" + stopsStr + "</td></tr>"
+                }
+                else {
+                    flightStr += "<tr><td><input type='button' onclick='getFormId()' style='width:auto' class='addButtons' id='" + i + "' value='Order Flight'/></td>"
+                        + "<td>" + toursData.data[i].conversion[toursData.currency] + " " + toursData.currency + "</td>"
+                        + "<td>" + new Date(toursData.data[i].dTime * 1000) + "</td>"
+                        + "<td>" + new Date(toursData.data[i].aTime * 1000) + "</td>"
+                        + "<td>" + toursData.data[i].cityFrom + "</td>"
+                        + "<td>" + toursData.data[i].cityTo + "</td>"
+                        + "<td>" + stopsStr + "</td></tr>"
+                }
+            }
+
+            $("#tablePH").html(tourStr);
+        }
 
     </script>
 </head>
@@ -20,15 +66,9 @@
         </div>
     </div>
 
-    <div>
-        <h3 class="packetsTitle">The packets that we are suggesting:</h3>
-    </div><br />
-    
-    <div class="box">
-      <div id="packets">
-
-      </div>
-      
+    <div id="ph">
+        <table id="tablePH" class="blueTable">
+        </table>
     </div>
   
 </body>
