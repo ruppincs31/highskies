@@ -160,6 +160,7 @@
     <Compile Include="Controllers\DiscountController.cs" />
     <Compile Include="Controllers\FlightController.cs" />
     <Compile Include="Controllers\OrderController.cs" />
+    <Compile Include="Controllers\TourCompanyController.cs" />
     <Compile Include="Controllers\UserController.cs" />
     <Compile Include="Models\DAL\DBServices.cs" />
     <Compile Include="Global.asax.cs">
@@ -174,6 +175,7 @@
     <Compile Include="Models\TourCompany.cs" />
     <Compile Include="Models\User.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Models\Tours.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Areas\HelpPage\HelpPage.css" />

@@ -231,8 +231,11 @@
 
 
 
-        
-
+        function closetheSuggest() {
+           
+            document.getElementById('id03').style.display = 'none';
+            completeOrder();
+        }
         
 
         function completeOrder() {
@@ -247,9 +250,11 @@
                         passengerEmail: passengerEmail,
                         orderDate: orderDate
                     }
+                    closetheSuggest();
                     Swal.fire('Order completed succesfully!',
                         'Thank you for booking your flight with High Skies',
                         'success')
+                    document.getElementById('id03').style.display = 'none'
                     ajaxCall("POST", '../api/order', JSON.stringify(passengerO), orderSuccess, null);
                 }
                 else {
@@ -323,19 +328,24 @@
             var TourCompanyName = loginFormInputs[3].value;
             if (ValidateEmail(userEmail)) {
 
-                    TourCompanyO = {
-                        userName: userName,
-                        userPassword: userPassword,
-                        userEmail: userEmail,
-                        TourCompanyName: TourCompanyName
-                        
+                TourCompanyO = {
+                    userName: userName,
+                    userPassword: userPassword,
+                    userEmail: userEmail,
+                    TourCompanyName: TourCompanyName
+
                 }
                 Swal.fire('Thanks for signing up!');
-                ajaxCall("POST", '../api/TourCompany', JSON.stringify(TourCompanyO), orderSuccess, null);
+                ajaxCall("POST", '../api/TourCompany', JSON.stringify(TourCompanyO), SignUpSuccess(), null);
+                return;
+            }
+        }
+        function SignUpSuccess() {
+            $("#id05")[0].style.display = 'none';
+
         }
 
-
-    </script>
+</script>
 </head>
 <body>
     <div class="hero-nav">
@@ -452,13 +462,13 @@
             </div>
 
             <div class="container" style="background-color:#f1f1f1">
-                <button type="button" onclick="document.getElementById('id03').style.display='none'" class="cancelbtn">Cancel</button>
+                <button type="button" onclick="closetheSuggest()" class="cancelbtn">Cancel</button>
             </div>
         </div>
     </form>
 
 
-    <div id="id04" class="modal">
+    <div id="id04" class="modal" onsubmit="orderSubmit(event)">
 
         <div class="modal-content animate" id="loginForm">
             <div class="imgcontainer">
@@ -485,7 +495,7 @@
             </div>
         </div>
     </div>
-    <div id="id05" class="modal">
+    <div id="id05" class="modal" onsubmit="orderSubmit(event)">
 
         <div class="modal-content animate" id="signUpForm">
             <div class="imgcontainer">

@@ -195,7 +195,7 @@ namespace WebApplication4.DAL
             }
             else if (currobject is TourCompany)
             {
-                Order tourCompanyObj = currobject as TourCompany;
+                TourCompany tourCompanyObj = currobject as TourCompany;
                 sb.AppendFormat("Values('{0}', '{1}', '{2}', '{3}')", tourCompanyObj.CompanyUserName, tourCompanyObj.CompanyPassword, tourCompanyObj.CompanyName, tourCompanyObj.CompanyEmail);
                 String prefix = "INSERT INTO TourCompaniesUsers_CS " + "(CompanyUserName, CompanyPassword , CompanyName, CompanyEmail) ";
                 command = prefix + sb.ToString();
@@ -351,6 +351,65 @@ namespace WebApplication4.DAL
 
             }
         }
+
+
+
+        public List<TourCompany> getCompanies()
+        {
+            List<TourCompany> tourCompaniesList = new List<TourCompany>();
+            SqlConnection con = null;
+
+            try
+            {
+                con = connect("DBConnectionString"); // create a connection to the database using the connection String defined in the web config file
+
+                String selectSTR = "SELECT * FROM Users_CS";
+                SqlCommand cmd = new SqlCommand(selectSTR, con);
+
+                // get a reader
+                SqlDataReader dr = cmd.ExecuteReader(CommandBehavior.CloseConnection); // CommandBehavior.CloseConnection: the connection will be closed after reading has reached the end
+
+                while (dr.Read())
+                {   // Read till the end of the data into a row
+                    TourCompany currTourComp= new TourCompany();
+
+                    
+                    currTourComp.CompanyUserName = (string)dr["CompanyuserName"];
+                    currTourComp.CompanyPassword = (string)dr["CompanyPassword"];
+                    currTourComp.CompanyEmail = (string)dr["CompanyEmail"];
+                    currTourComp.CompanyName = (string)dr["CompanyName"];
+                    tourCompaniesList.Add(currTourComp);
+                }
+
+                return tourCompaniesList;
+            }
+            catch (Exception ex)
+            {
+                // write to log
+                throw (ex);
+            }
+            finally
+            {
+                if (con != null)
+                {
+                    con.Close();
+                }
+
+            }
+        }
+
+
+
+
+
+
+
+
+
+
+
+
+
     }
 }
 
