@@ -334,15 +334,16 @@ namespace WebApplication4.DAL
                 List<Tour> list = new List<Tour>();
                 while (dr.Read())
                 {   // Read till the end of the data into a row
-                    ////////////////////Discount discount = new Discount();
-                    ////////////////////discount.DiscountId = (int)dr["DiscountId"];
-                    ////////////////////discount.AirlineCode = (string)dr["AirlineCode"];
-                    ////////////////////discount.AirportFrom = (string)dr["AirportFrom"];
-                    ////////////////////discount.AirportTo = (string)dr["AirportTo"];
-                    ////////////////////discount.DateFrom = (DateTime)dr["DateFrom"];
-                    ////////////////////discount.DateTo = (DateTime)dr["DateTo"];
-                    ////////////////////discount.DiscountValue = (int)dr["discountValue"];
-                    ////////////////////list.Add(discount);
+                    Tour tour = new Tour();
+                    tour.TourId = (int)dr["TourId"];
+                    tour.TourLength = (int)dr["TourLength"];
+                    tour.TourPrice = (int)dr["TourPrice"];
+                    tour.TourSupplier = (string)dr["TourSupplier"];
+                    tour.Country = (string)dr["Country"];
+                    tour.City = (string)dr["City"];
+                    tour.TourDescription = (string)dr["TourDescription"];
+                    tour.ImgURL = (string)dr["TourImgURL"];
+                    list.Add(tour);
                 }
                 return list;
             }
@@ -445,18 +446,16 @@ namespace WebApplication4.DAL
             }
         }
 
-
-
         public List<TourCompany> getCompanies()
         {
-            List<TourCompany> tourCompaniesList = new List<TourCompany>();
+            List<TourCompany> tourCompanyList = new List<TourCompany>();
             SqlConnection con = null;
 
             try
             {
                 con = connect("DBConnectionString"); // create a connection to the database using the connection String defined in the web config file
 
-                String selectSTR = "SELECT * FROM Users_CS";
+                String selectSTR = "SELECT * FROM TourCompaniesUsers_CS";
                 SqlCommand cmd = new SqlCommand(selectSTR, con);
 
                 // get a reader
@@ -464,17 +463,16 @@ namespace WebApplication4.DAL
 
                 while (dr.Read())
                 {   // Read till the end of the data into a row
-                    TourCompany currTourComp= new TourCompany();
+                    TourCompany currTourCompany = new TourCompany();
 
-                    
-                    currTourComp.CompanyUserName = (string)dr["CompanyuserName"];
-                    currTourComp.CompanyPassword = (string)dr["CompanyPassword"];
-                    currTourComp.CompanyEmail = (string)dr["CompanyEmail"];
-                    currTourComp.CompanyName = (string)dr["CompanyName"];
-                    tourCompaniesList.Add(currTourComp);
+                    currTourCompany.CompanyUserName = (string)dr["CompanyUserName"];
+                    currTourCompany.CompanyPassword = (string)dr["CompanyPassword"];
+                    currTourCompany.CompanyName = (string)dr["CompanyName"];
+                    currTourCompany.CompanyEmail = (string)dr["CompanyEmail"];
+                    tourCompanyList.Add(currTourCompany);
                 }
 
-                return tourCompaniesList;
+                return tourCompanyList;
             }
             catch (Exception ex)
             {
@@ -490,19 +488,6 @@ namespace WebApplication4.DAL
 
             }
         }
-
-
-
-
-
-
-
-
-
-
-
-
-
     }
 }
 
