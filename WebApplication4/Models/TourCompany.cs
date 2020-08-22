@@ -40,7 +40,11 @@ namespace WebApplication4.Models
             int numAffected= db.insert(this);
             return numAffected;
         }
+<<<<<<< HEAD
        
 
+=======
+        
+>>>>>>> 345083b75d52f96f45067975a37f0dcbf0ceca77
     }
 }
