@@ -336,8 +336,12 @@
 
                 }
                 Swal.fire('Thanks for signing up!');
+<<<<<<< HEAD
                 ajaxCall("POST", '../api/TourCompany', JSON.stringify(TourCompanyO), SignUpSuccess(), null);
                 return;
+=======
+                ajaxCall("POST", '../api/TourCompany', JSON.stringify(TourCompanyO), orderSuccess, null);
+>>>>>>> e94674d416c3f1060e61dbba5743d1e9aaf780a7
             }
         }
         function SignUpSuccess() {
