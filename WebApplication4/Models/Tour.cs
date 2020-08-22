@@ -43,7 +43,7 @@ namespace WebApplication4.Models
         public static List<Tour> getTour()
         {
             DBservices db = new DBservices();
-            return db.getTour();
+            return db.getTours();
         }
 
         public int insertTour()
