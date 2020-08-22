@@ -177,7 +177,7 @@
     <Compile Include="Models\TourCompany.cs" />
     <Compile Include="Models\User.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Models\Tours.cs" />
+    <Compile Include="Models\Tour.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Areas\HelpPage\HelpPage.css" />
