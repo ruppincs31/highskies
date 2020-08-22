@@ -159,15 +159,7 @@
             $('#Price').val(tour.Price);
         }
 
-        this.tourId = tourId;
-        this.tourLength = tourLength;
-        this.tourPrice = tourPrice;
-        this.tourSupplier = tourSupplier;
-        this.country = country;
-        this.city = city;
-        this.tourTitle = tourTitle;
-        this.tourDescription = tourDescription;
-        this.ImgURL = imgURL;
+       
 
         // fill the form fields
         function clearFields() {
@@ -239,11 +231,11 @@
                     columns: [
                         {
                             render: function (data, type, row, meta) {
-                                let dataDiscount = "data-discountId='" + row.DiscountId + "'";
+                                let datatour = "data-TourId='" + row.TourId + "'";
 
-                                editBtn = "<button type='button' class = 'editBtn btn btn-success' " + dataDiscount + "> Edit </button>";
-                                viewBtn = "<button type='button' class = 'viewBtn btn btn-info' " + dataDiscount + "> View </button>";
-                                deleteBtn = "<button type='button' class = 'deleteBtn btn btn-danger' " + dataDiscount + "> Delete </button>";
+                                editBtn = "<button type='button' class = 'editBtn btn btn-success' " + datatour + "> Edit </button>";
+                                viewBtn = "<button type='button' class = 'viewBtn btn btn-info' " + datatour + "> View </button>";
+                                deleteBtn = "<button type='button' class = 'deleteBtn btn btn-danger' " + datatour + "> Delete </button>";
                                 return editBtn + viewBtn + deleteBtn;
                             }
                         },

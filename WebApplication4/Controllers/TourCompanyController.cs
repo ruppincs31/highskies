@@ -33,9 +33,6 @@ namespace WebApplication4.Controllers
         {
             return TourCompany.getTourCompanies();
         }
-<<<<<<< HEAD
 
-=======
->>>>>>> 72d4be491b2e5ff0e8f8edb10118554cd5f22251
     }
 }
