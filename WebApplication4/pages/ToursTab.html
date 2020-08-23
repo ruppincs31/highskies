@@ -43,7 +43,6 @@
 
     <script>
 
-        // will run when the document is ready
         $(document).ready(function () {
 
             mode = "";
@@ -65,7 +64,6 @@
             });
 
 
-            // once the document is ready we fetch a list of cars from the server
             ajaxCall("GET", "../api/TourController", null, getSuccess, error);
 
             $("#TourForm").submit(onSubmitFunc); // wire the submit event to a function called f1
@@ -240,12 +238,13 @@
                             }
                         },
                         { data: "TourId" },
-                        { data: "tourCompany" },
-                        { data: "city" },
-                        { data: "tourTitle" },
-                        { data: "tourDescrip" },
+                        { data: "Country" },
+                        { data: "City" },
+                        { data: "TourTitle" },
                         { data: "TourLength" },
-                        { data: "Price" }
+                        { data: "TourPrice" }
+                        { data: "TourDescription" },
+                        { data: "TourImgURL"}
                     ],
                 });
                 buttonEvents();
@@ -261,8 +260,8 @@
             swal("Error: " + err);
         }
 
-        function backToManagment() {
-            window.location.replace('Manager.html')
+        function backToMain() {
+            window.location.replace('index.html');
         }
 
     </script>
@@ -278,7 +277,7 @@
         </div>
     </div>
     <div>
-        <a class="aTabs" onclick="backToManagment()" style="width:auto" ;>Back to Managment</a>
+        <a class="aTabs" onclick="backToMain()" style="width:auto" ;>Back to the Mainpage</a>
     </div>
     <div class="container">
         <input type="button" value="New" class="btn btn-primary btn-lg" id="newBTN" />
@@ -288,13 +287,13 @@
                     <tr>
                         <th></th>
                         <th>Tour Id</th>
-                        <th>Tour Supplier</th>
                         <th>Country</th>
                         <th>City</th>
                         <th>Tour Title</th>
-                        <th>Tour Description</th>
                         <th>Tour Length (in Hrs)</th>
                         <th>Price (in Euros)</th>
+                        <th>Tour Description</th>
+                        <th>Tour ImgURL</th>
                     </tr>
                 </thead>
             </table>
@@ -329,12 +328,6 @@
                         <label for="departureDate"><span class="red-star">★ </span>Tour title</label>
                         <input type="text" class="form-control" id="tourTitle" placeholder="Enter tour title" required>
                     </div>
-
-                    <div class="form-group col-sm-4">
-                        <label for="arivalDate"><span class="red-star">★ </span>Tour Description</label>
-                        <input type="text" class="form-control" id="tourDescrip" placeholder="Enter tour description" required>
-                    </div>
-
                     <div class="form-group col-sm-4">
                         <label for="discount"><span class="red-star">★ </span>Tour Length</label>
                         <input type="number" class="form-control" id="TourLength" placeholder="Enter tour Length" required />
