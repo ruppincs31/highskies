@@ -48,24 +48,21 @@
             mode = "";
 
             $("#cancelSaveBTN").on("click", function () {
-                discount = null;
+                tour = null;
                 $("#editDiv").hide();
                 if (mode == "new") $("#pForm").show();
                 mode = "";
             });
 
             $("#newBTN").on("click", function () {
-                discount = null;
+                tour = null;
                 mode = "new";
                 $("#pForm").hide();
                 $("#editDiv").show();
                 clearFields();
                 $("#editDiv :input").prop("disabled", false); // new mode: enable all controls in the form
             });
-
-            ajaxCall("GET", "../api/TourController", null, getSuccess, error);
-            // once the document is ready we fetch a list of cars from the server
-            //ajaxCall("GET", "../api/TourCont", null, getSuccess, error);
+            ajaxCall("GET", "../api/tour/gettours", null, getSuccess, error);
             $("#TourForm").submit(onSubmitFunc); // wire the submit event to a function called f1
 
             $("#editDiv").hide();
@@ -91,10 +88,10 @@
                 populateFields(this.getAttribute('data-tourId'));
             });
 
-            $(document).on("click", ".delexteBtn", function () {
+            $(document).on("click", ".deleteBtn", function () {
                 mode = "delete";
                 markSelected(this);
-                var discountId = this.getAttribute('data-tourId');
+                var tourId = this.getAttribute('data-tourId');
                 swal({ // this will open a dialouge
                     title: "Are you sure ??",
                     text: "",
@@ -103,7 +100,7 @@
                     dangerMode: true
                 })
                     .then(function (willDelete) {
-                        if (willDelete) DeleteDiscount(tourId);
+                        if (willDelete) Deletetour(tourId);
                         else swal("Not Deleted!");
                     });
             });
@@ -117,12 +114,13 @@
         }
 
         function Deletetour(id) {
-            ajaxCall("DELETE", "../api/TourCont", id, deleteSuccess, error);
+            ajaxCall("DELETE", "../api/tour/delete", id, deleteSuccess, error);
         }
 
 
-        function onSubmitFunc() {
-            ajaxCall("GET", "../api/tourcompany/getcompany", null, submitTour, null);
+        function onSubmitFunc(e) {
+            e.preventDefault()
+            ajaxCall("GET", "../api/tourcompany/getcompany", null, submitTour, error);
         }
 
         function submitTour(companyName) {
@@ -130,8 +128,6 @@
             if (mode == "edit") {
                 Id = tours.TourId;
             }
-            tourCompany
-
             let tourToSave = {
                 tourId: Id,
                 country: $("#country").val(),
@@ -143,11 +139,10 @@
                 imgURL: $("#imgURL").val(),
                 tourSupplier: companyName
             }
-
             if (mode == "edit")
-                ajaxCall("PUT", "../api/TourCont", JSON.stringify(tourToSave), updateSuccess, error);
+                ajaxCall("PUT", "../api/tour/edit", JSON.stringify(tourToSave), updateSuccess, error);
             else if (mode == "new")
-                ajaxCall("POST", "../api/TourCont", JSON.stringify(tourToSave), insertSuccess, error);
+                ajaxCall("POST", "../api/tour/insert", JSON.stringify(tourToSave), insertSuccess, error);
             return false;
         }
 
@@ -174,7 +169,6 @@
             $('#imgURL').val("");
         }
 
-        // get a car according to its Id
         function getTour(id) {
             for (i in tours) {
                 if (tours[i].TourId == id)
@@ -249,7 +243,7 @@
                         { data: "TourLength" },
                         { data: "TourPrice" },
                         { data: "TourDescription" },
-                        { data: "TourImgURL"}
+                        { data: "ImgURL"}
                     ],
                 });
                 buttonEvents();

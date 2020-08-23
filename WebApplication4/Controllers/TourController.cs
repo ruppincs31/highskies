@@ -11,6 +11,8 @@ namespace WebApplication4.Controllers
 {
     public class TourController : ApiController
     {
+        [HttpGet]
+        [Route("api/tour/gettours")]
         public IEnumerable<Tour> Get()
         {
             return Tour.getTour();
@@ -20,19 +22,23 @@ namespace WebApplication4.Controllers
         //{
         //    return "value";
         //}
-
+        [HttpPost]
+        [Route("api/tour/insert")]
         public IEnumerable<Tour> Post([FromBody]Tour tour)
         {
             tour.insertTour();
             return Tour.getTour();
         }
-
+        [HttpPut]
+        [Route("api/tour/edit")]
         public IEnumerable<Tour> Put([FromBody]Tour tour)
         {
             tour.editTour();
             return Tour.getTour();
         }
 
+        [HttpDelete]
+        [Route("api/tour/delete")]
         public IEnumerable<Tour> Delete([FromBody]int tourId)
         {
             Tour.deleteTour(tourId);

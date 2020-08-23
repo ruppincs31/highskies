@@ -20,14 +20,8 @@ namespace WebApplication4.DAL
 
         public DBservices()
         {
-            //
-            // TODO: Add constructor logic here
-            //
         }
 
-        //--------------------------------------------------------------------------------------------------
-        // This method creates a connection to the database according to the connectionString name in the web.config 
-        //--------------------------------------------------------------------------------------------------
         public SqlConnection connect(String conString)
         {
 
@@ -38,9 +32,6 @@ namespace WebApplication4.DAL
             return con;
         }
 
-        //--------------------------------------------------------------------------------------------------
-        // This method inserts a car to the cars table 
-        //--------------------------------------------------------------------------------------------------
         public int insert(object currobject)
         {
 
@@ -253,8 +244,8 @@ namespace WebApplication4.DAL
             else if (currobject is Tour)
             {
                 Tour tourObj = currobject as Tour;
-                sb.AppendFormat("Values('{0}', '{1}', '{2}', '{3},{4}', '{5}', '{6}', '{7}')", tourObj.TourId,tourObj.TourLength,tourObj.TourPrice,tourObj.Country,tourObj.City,tourObj.TourTitle,tourObj.TourDescription,tourObj.ImgURL);
-                String prefix = "INSERT INTO TourCompaniesUsers_CS " + "(TourId , TourLength  , TourPrice  ,Country  , City   , TourTitle , TourDescription ,TourImgURL ) ";
+                sb.AppendFormat("Values('{0}', '{1}', '{2}', '{3}', '{4}', '{5}', '{6}', '{7}')" ,tourObj.TourSupplier, tourObj.TourLength,tourObj.TourPrice,tourObj.Country,tourObj.City,tourObj.TourTitle,tourObj.TourDescription,tourObj.ImgURL);
+                String prefix = "INSERT INTO Tour_CS " + "(TourSupplier, TourLength, TourPrice, Country, City, TourTitle ,TourDescription , TourImgURL) ";
                 command = prefix + sb.ToString();
                 return command;
             }
@@ -441,7 +432,6 @@ namespace WebApplication4.DAL
                 while (dr.Read())
                 {   // Read till the end of the data into a row
                     User currUser = new User();
-
                     currUser.UserType = (string)dr["userType"];
                     currUser.UserName = (string)dr["userName"];
                     currUser.UserPassword = (string)dr["userPassword"];
@@ -461,7 +451,6 @@ namespace WebApplication4.DAL
                 {
                     con.Close();
                 }
-
             }
         }
 
@@ -483,14 +472,12 @@ namespace WebApplication4.DAL
                 while (dr.Read())
                 {   // Read till the end of the data into a row
                     TourCompany currTourCompany = new TourCompany();
-
                     currTourCompany.CompanyUserName = (string)dr["CompanyUserName"];
                     currTourCompany.CompanyPassword = (string)dr["CompanyPassword"];
                     currTourCompany.CompanyName = (string)dr["CompanyName"];
                     currTourCompany.CompanyEmail = (string)dr["CompanyEmail"];
                     tourCompanyList.Add(currTourCompany);
                 }
-
                 return tourCompanyList;
             }
             catch (Exception ex)
