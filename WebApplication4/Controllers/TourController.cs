@@ -18,10 +18,20 @@ namespace WebApplication4.Controllers
             return Tour.getTour();
         }
 
-        //public string Get(int id)
-        //{
-        //    return "value";
-        //}
+        [HttpPost]
+        [Route("api/tour/relevant")]
+        public void Post(string[] stopsArray)
+        {
+            Tour.getRelevantTour(stopsArray);
+        }
+
+        [HttpGet]
+        [Route("api/tour/getrelevanttours")]
+        public List<Tour> GetRelevant()
+        {
+            return Tour.relevantTours;
+        }
+
         [HttpPost]
         [Route("api/tour/insert")]
         public IEnumerable<Tour> Post([FromBody]Tour tour)

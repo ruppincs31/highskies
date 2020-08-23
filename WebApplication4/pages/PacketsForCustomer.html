@@ -4,56 +4,56 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title></title>
+    <script src="../Scripts/ajaxCalls.js"></script>
     <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@9"></script>
     <link href="../Styles/StyleSheet1.css" rel="stylesheet" />
+
     <script>
         $(document).ready(function () {
-            getTours();
+            ajaxCall("GET", "../api/tour/getrelevanttours", null, renderTours, null);
         });
 
-
-        function getTours() {
-            ajaxCall("GET", "../api/tour", null, renderTours, null);
-        }
-
         function renderTours(toursData) {
-            let tourStr = "<tr><th></th><th>Flight Price</th><th>Departure Time</th><th>Arival Time</th><th>From</th><th>To</th><th>Stops</th></tr>";
+            let tourStr = "<tr><th></th><th>Tour Title</th><th>Country</th><th>City</th><th>Tour Length</th><th>Price</th><th>Description</th><th></th></tr>";
             for (var i = 0; i < toursData.length; i++) {
-                toursData.data[i].p1 = 0;
-                for (var k = 0; k < discountsData.length; k++) {
-                    if (toursData.data[i].route.length == 1) {
-                        if ((toursData.data[i].airlines[0] == discountsData[k].AirlineCode) &&
-                            (toursData.data[i].flyFrom == discountsData[k].AirportFrom) &&
-                            (toursData.data[i].flyTo == discountsData[k].AirportTo) &&
-                            (toursData.data[i].dTime <= discountsData[k].DateFrom) &&
-                            (toursData.data[i].dTime >= discountsData[k].DateTo)) {
-                            toursData.data[i].p1 = 1;
-                            toursData.data[i].p2 = k;
-                        }
-                    }
-                }
-                if (toursData.data[i].p1 == 1 ) {
-                    flightStr += "<tr><td><input type='button' onclick='getFormId()' style='width:auto' class='addButtons' id='" + i + "' value='Order Flight'/></td>"
-                        + "<td>" + (toursData.data[i].conversion[toursData.currency] * (1 - (discountsData[toursData.data[i].p2].DiscountValue / 100))) + " " + toursData.currency + "</br>" + discountsData[toursData.data[i].p2].DiscountValue + "% Discount</td>"
-                        + "<td>" + new Date(toursData.data[i].dTime * 1000) + "</td>"
-                        + "<td>" + new Date(toursData.data[i].aTime * 1000) + "</td>"
-                        + "<td>" + toursData.data[i].cityFrom + "</td>"
-                        + "<td>" + toursData.data[i].cityTo + "</td>"
-                        + "<td>" + stopsStr + "</td></tr>"
-                }
-                else {
-                    flightStr += "<tr><td><input type='button' onclick='getFormId()' style='width:auto' class='addButtons' id='" + i + "' value='Order Flight'/></td>"
-                        + "<td>" + toursData.data[i].conversion[toursData.currency] + " " + toursData.currency + "</td>"
-                        + "<td>" + new Date(toursData.data[i].dTime * 1000) + "</td>"
-                        + "<td>" + new Date(toursData.data[i].aTime * 1000) + "</td>"
-                        + "<td>" + toursData.data[i].cityFrom + "</td>"
-                        + "<td>" + toursData.data[i].cityTo + "</td>"
-                        + "<td>" + stopsStr + "</td></tr>"
-                }
+                tourStr += "<tr><td><input type='button' onclick='submitTour()' style='width:auto' class='addButtons' id='" + i + "' value='Order Tour'/></td>"
+                    + "<td>" + toursData[i].TourTitle + "</td>"
+                    + "<td>" + toursData[i].Country + "</td>"
+                    + "<td>" + toursData[i].City + "</td>"
+                    + "<td>" + toursData[i].TourLength + "</td>"
+                    + "<td>" + toursData[i].TourPrice + "</td>"
+                    + "<td>" + toursData[i].TourDescription + "</td>"
+                    + "<td><img src='" + toursData[i].ImgURL + "' width='250px' height='250px'/></td></tr>";
             }
 
             $("#tablePH").html(tourStr);
+        }
+
+        async function submitTour() {
+            Swal.fire({
+                      title: 'Special offers',
+                      text: "Are u sure u want to book that tour?",
+                      icon: 'info',
+                      showCancelButton: true,
+                      confirmButtonColor: '#3085d6',
+                      cancelButtonColor: '#d33',
+                      confirmButtonText: 'Yes',
+                      cancelButtonText: "Cancel"
+                    }).then((result) => {
+                        if (result.value) {
+                             await Swal.fire('Order completed succesfully!',
+                                 'Thank you for booking your Tour with High Skies',
+                                 'success')
+                            window.location.replace('index.html')
+                      }
+                    })
+
+           
+        }
+
+        function backToMain() {
+            window.location.replace('index.html')
         }
 
     </script>
@@ -66,10 +66,13 @@
         </div>
     </div>
 
+    <div>
+        <a class="aTabs" onclick="backToMain()" style="width:auto" ;>Cancel special offers - Go back to the main page</a>
+    </div>
+
     <div id="ph">
         <table id="tablePH" class="blueTable">
         </table>
     </div>
-  
 </body>
 </html>

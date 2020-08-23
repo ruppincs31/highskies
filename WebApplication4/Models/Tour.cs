@@ -10,6 +10,7 @@ namespace WebApplication4.Models
     {
         int tourId, tourLength, tourPrice;
         string tourSupplier, country, city, tourTitle, tourDescription, imgURL;
+        public static List<Tour> relevantTours = new List<Tour>();
 
 
         public Tour(int tourId, int tourLength, int tourPrice, string tourSupplier, string country, string city, string tourTitle, string tourDescription, string imgURL)
@@ -60,6 +61,21 @@ namespace WebApplication4.Models
         {
             DBservices db = new DBservices();
             return db.editTour(this);
+        }
+        public static void getRelevantTour(string[] stopsArray)
+        {
+            HttpContext.Current.Session["companyName"] = "cost";
+            relevantTours.Clear();
+            DBservices db = new DBservices();
+            List<Tour> allTours = db.getTours();
+            foreach (var tour in allTours)
+            {
+                foreach (var connectionCity in stopsArray)
+                {
+                    if (tour.City == connectionCity)
+                        relevantTours.Add(tour);
+                }
+            }
         }
     }
 }

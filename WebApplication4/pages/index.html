@@ -275,10 +275,22 @@
                       cancelButtonText: "No, I'm good"
                     }).then((result) => {
                         if (result.value) {
-                           //flightsData[selectedFlight];
+                            checkStops();
                       }
                     })
             }
+        }
+        function checkStops() {
+            stopsArray = []
+            for (var i = 0; i < flightsData.data[selectedFlight].route.length - 1; i++) {
+                stopsArray.push(flightsData.data[selectedFlight].route[i].cityTo);
+            }
+
+            //stopsO = {
+            //    stopsArray: stopsArray
+            //}
+
+            ajaxCall("POST", '../api/tour/relevant', JSON.stringify(stopsArray), goTosuggetsPage, null);
         }
 
         function ValidateEmail(mail) {

@@ -346,6 +346,10 @@ namespace WebApplication4.DAL
                     if (tour.TourSupplier == "All") {
                         list.Add(tour);
                     }
+                    else if ((string)(HttpContext.Current.Session["companyName"]) == "cost")
+                    {
+                        list.Add(tour);
+                    }
                     else if (tour.TourSupplier != companyName)
                     {
                         continue;
