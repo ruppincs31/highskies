@@ -122,7 +122,10 @@
 
 
         function onSubmitFunc() {
+            ajaxCall("GET", "../api/tourcompany/getcompany", null, submitTour, null);
+        }
 
+        function submitTour(companyName) {
             var Id = tours.length;
             if (mode == "edit") {
                 Id = tours.TourId;
@@ -131,12 +134,14 @@
 
             let tourToSave = {
                 tourId: Id,
+                country: $("#country").val(),
                 city: $("#city").val(),
                 tourTitle: $("#tourTitle").val(),
-                tourDescription: $("#tourDescrip").val(),
-                tourLength: $("#TourLength").val(),
-                tourPrice: $("#Price").val(),
-                tourImage: $("#Image").val()
+                tourDescription: $("#tourDescription").val(),
+                tourLength: $("#tourLength").val(),
+                tourPrice: $("#tourPrice").val(),
+                imgURL: $("#imgURL").val(),
+                tourSupplier: companyName
             }
 
             if (mode == "edit")
@@ -149,26 +154,24 @@
         // fill the form fields
         function populateFields(TourId) {
             tour = getTour(TourId);
-            $('#City').val(tour.city);
-            $('#Country').val(tour.city)
-            $('#tourTitle').val(tour.tourTitle);
-            $('#tourDescrip').val(tour.tourDescription);
-            $('#TourLength').val(tour.tourLength);
-            $('#Price').val(tour.Price);
-            $('Image').val(tour.tourImage);
+            $('#city').val(tour.City);
+            $('#country').val(tour.Country)
+            $('#tourTitle').val(tour.TourTitle);
+            $('#tourDescription').val(tour.TourDescription);
+            $('#tourLength').val(tour.TourLength);
+            $('#price').val(tour.Price);
+            $('#imgURL').val(tour.ImgURL);
         }
-
-       
 
         // fill the form fields
         function clearFields() {
-            $('#City').val("");
-            $('#Country').val("");
+            $('#city').val("");
+            $('#country').val("");
             $('#tourTitle').val("");
             $('#tourDescrip').val("");
-            $('#TourLength').val("");
-            $('#Price').val("");
-            $("Image").val("");
+            $('#tourLength').val("");
+            $('#price').val("");
+            $('#imgURL').val("");
         }
 
         // get a car according to its Id
@@ -244,7 +247,7 @@
                         { data: "City" },
                         { data: "TourTitle" },
                         { data: "TourLength" },
-                        { data: "TourPrice" }
+                        { data: "TourPrice" },
                         { data: "TourDescription" },
                         { data: "TourImgURL"}
                     ],
@@ -299,7 +302,6 @@
                     </tr>
                 </thead>
             </table>
-
         </form>
 
         <div id="editDiv">
@@ -307,46 +309,40 @@
                 <div class="form-group row">
 
                     <div class="form-group col-sm-4">
-                        <label for="Country"><span class="red-star">★ </span>Country</label>
-                        <input type="text" class="form-control" id="Country" placeholder="Enter the Country" required>
+                        <label for="country"><span class="red-star">★ </span>Country</label>
+                        <input type="text" class="form-control" id="country" placeholder="Enter the Country" required>
                     </div>
 
 
                     <div class="form-group col-sm-4">
-                        <label for="City"><span class="red-star">★ </span>City</label>
+                        <label for="city"><span class="red-star">★ </span>City</label>
                         <input type="text" class="form-control" id="city" placeholder="Enter the City" required>
                     </div>
                     <div class="form-group col-sm-4">
-                        <label for="TourTitler"><span class="red-star">★ </span>Tour title</label>
+                        <label for="TourTitle"><span class="red-star">★ </span>Tour title</label>
                         <input type="text" class="form-control" id="tourTitle" placeholder="Enter tour title" required>
                     </div>
                 </div>
-
                 <div class="form-group row">
 
                     <div class="form-group col-sm-4">
                         <label for="TourLength"><span class="red-star">★ </span>Tour Length</label>
-                        <input type="number" class="form-control" id="TourLength" placeholder="Enter tour Length" required />
+                        <input type="number" class="form-control" id="tourLength" placeholder="Enter tour Length" required />
                     </div>
                     <div class="form-group col-sm-4">
                         <label for="Price"><span class="red-star">★ </span>Price</label>
-                        <input type="number" class="form-control" id="Price" placeholder="Enter tour price" required />
+                        <input type="number" class="form-control" id="tourPrice" placeholder="Enter tour price" required />
                     </div>
                     <div class="form-group col-sm-4">
-                        <label for="arivalDate"><span class="red-star">★ </span>Image</label>
-                        <input type="text" class="form-control" id="Image" placeholder="Enter tour description" required>
-                    </div>
-
-                    <div class="form-group col-sm-4">
-                        <label for="arivalDate"><span class="red-star">★ </span>Tour Description</label>
-                        <textarea rows="6" cols="50" name="comment" form="TourForm"> Enter tour Description</textarea>
+                        <label for="imgURL"><span class="red-star">★ </span>Image</label>
+                        <input type="text" class="form-control" id="imgURL" placeholder="Enter tour image URL" required />
                     </div>
                 </div>
 
                 <div class="form-group row">
                     <div class="form-group col-sm-8">
-                        <label for="description">Tour Description</label>
-                        <textarea rows="6" class="form-control" id="tourDescrip" placeholder="Enter the description"></textarea>
+                        <label for="tourDescription">Tour Description</label>
+                        <textarea rows="6" class="form-control" id="tourDescription" placeholder="Enter the description">Enter tour description</textarea>
                     </div>
                 </div>
 

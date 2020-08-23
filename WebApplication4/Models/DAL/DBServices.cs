@@ -346,6 +346,7 @@ namespace WebApplication4.DAL
                     tour.TourId = (int)dr["TourId"];
                     tour.TourLength = (int)dr["TourLength"];
                     tour.TourPrice = (int)dr["TourPrice"];
+                    tour.TourTitle = (string)dr["TourTitle"];
                     tour.TourSupplier = (string)dr["TourSupplier"];
                     tour.Country = (string)dr["Country"];
                     tour.City = (string)dr["City"];

@@ -34,5 +34,13 @@ namespace WebApplication4.Controllers
             return TourCompany.getTourCompanies();
         }
 
+        [HttpGet]
+        [Route("api/tourcompany/getcompany")]
+        public string Get()
+        {
+            string companyName = (string)(HttpContext.Current.Session["companyName"]);
+            return companyName;
+        }
+
     }
 }
